@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dark_chocolate"
+    android:fitsSystemWindows="true"
+    tools:context=".LorealBaLoginActivty">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/nav_header_vertical_spacing"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="@dimen/nav_header_vertical_spacing"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/size_18dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/nav_header_vertical_spacing"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textColorHint="@color/darkgrey">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/userid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:hint=" User Id"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/grayfor_login"
+                        android:textColorHint="@color/darkgrey"
+                        app:backgroundTint="@color/darkgrey" />
+
+
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textColorHint="@color/darkgrey"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/darkgrey">
+
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:focusableInTouchMode="true"
+                        android:hint="Password"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/grayfor_login"
+                        android:textColorHint="@color/darkgrey"
+                        app:backgroundTint="@color/darkgrey" />
+
+                  <!--  android:drawableStart="@mipmap/pasword"
+                    android:drawableLeft="@mipmap/pasword"-->
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/user_login_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="297px"
+                    android:layout_height="57px"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/login_btn" />
+
+                <Button
+                    android:id="@+id/btn_reset_password"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+                    android:background="@null"
+                    android:text="Forgot your password ?"
+                    android:textAllCaps="false"
+                    android:textColor="@color/grey_dark_background"
+                    android:visibility="visible" />
+
+                <!-- Link to Login Screen -->
+
+
+                <ImageView
+                    android:layout_width="288px"
+                    android:layout_height="192px"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/login_logo"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_having_problem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:text="Cannot access your account?"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_grey_color"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <ImageView
+            android:layout_width="350px"
+            android:layout_height="67.5px"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/ba_managment" />
+
+        <TextView
+            android:id="@+id/tv_version_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="version"
+            android:textColor="@color/grayfor_login"
+            android:textSize="@dimen/text_size_normal" />
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/login_underline" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone" />
+</android.support.design.widget.CoordinatorLayout>

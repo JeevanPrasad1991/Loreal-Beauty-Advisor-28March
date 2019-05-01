@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="2dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/size_18dp"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/posm_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="Header"
+                android:textColor="@color/grayfor_login"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:text="Exists"
+                    android:textColor="@color/grayfor_login"
+                    android:textSize="@dimen/store_entry_text_size"
+                    android:textStyle="normal" />
+
+                <Button
+                    android:id="@+id/posm_btn_first"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@drawable/rouded_corner_pinki"
+                    android:gravity="center_horizontal"
+                    android:padding="15dp"
+                    android:text="Yes"
+                    android:textColor="@color/grayfor_login"
+                    android:textSize="@dimen/text_size_13sp"
+                    android:textStyle="normal" />
+
+                <Button
+                    android:id="@+id/posm_btn_second"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/rouded_corner_pinki"
+                    android:gravity="center_horizontal"
+                    android:padding="15dp"
+                    android:text="No"
+                    android:textColor="@color/grayfor_login"
+                    android:textSize="@dimen/text_size_13sp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/posm_rl_child"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:text="Picture"
+                        android:textColor="@color/grayfor_login"
+                        android:textSize="@dimen/store_entry_text_size"
+                        android:textStyle="normal" />
+
+                    <ImageView
+                        android:id="@+id/customerwise_sale"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:src="@mipmap/camera_orange" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/scan_qr_code_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="@dimen/text_14sp"
+                    android:layout_marginRight="@dimen/text_25dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/rouded_corner_pinki"
+                    android:gravity="center"
+                    android:text="Scan QR"
+                    android:textColor="@color/grayfor_login"
+                    android:textSize="@dimen/text_size_13sp"
+                    android:textStyle="normal" />
+
+
+                <TextView
+                    android:id="@+id/text_QR_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text=""
+                    android:textColor="@color/grayfor_login"
+                    android:textSize="@dimen/store_entry_text_size"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rl_child_promotion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_size_13sp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="Picture"
+                    android:textColor="@color/grayfor_login"
+                    android:textSize="@dimen/store_entry_text_size"
+                    android:textStyle="normal" />
+
+                <ImageView
+                    android:id="@+id/img_promotion"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:src="@mipmap/camera_orange" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/posm_rl_non"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/text22dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="@dimen/text22dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Spinner
+                    android:id="@+id/posm_spin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

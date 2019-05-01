@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
+    android:weightSum="9">
+
+    <TextView
+        android:id="@+id/text_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="4"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="Item Sold"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_13sp" />
+
+    <TextView
+        android:id="@+id/text_qty"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.5"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="QTY"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_xsmall" />
+
+    <TextView
+        android:id="@+id/txt_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="Amount"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_xsmall" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="@dimen/text_25dp"
+        android:layout_gravity="center"
+        android:layout_weight="1.5"
+        android:gravity="center"
+        android:src="@drawable/edit" />
+</LinearLayout>

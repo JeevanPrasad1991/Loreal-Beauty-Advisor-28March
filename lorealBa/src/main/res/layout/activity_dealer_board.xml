@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="ba.cpm.com.lorealba.dailyentry.DealerBoardActivity">
+
+    <include layout="@layout/content_dealer_board" />
+
+    <ImageView
+        android:layout_width="48px"
+        android:layout_height="48px"
+        android:layout_gravity="right"
+        android:layout_margin="4dp"
+        android:src="@mipmap/setting_icon" />
+
+</android.support.design.widget.CoordinatorLayout>

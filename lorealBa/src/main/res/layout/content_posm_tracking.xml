@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blank_screen"
+    android:orientation="vertical"
+    android:weightSum="100"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ba.cpm.com.lorealba.dailyentry.PosmTracking"
+    tools:showIn="@layout/activity_posm_tracking">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/drawer_layout_recycle_store"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
+        android:layout_weight="90">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="6">
+
+        <ImageView
+            android:id="@+id/img_daily_sales"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="3"
+            android:src="@drawable/daily_sale36"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/bottom_customerwise_sale"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/cust_mer36" />
+
+        <ImageView
+            android:id="@+id/img_promotion"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/promotion36" />
+    </LinearLayout>
+
+</LinearLayout>

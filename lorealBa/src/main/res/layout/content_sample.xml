@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blank_screen"
+    android:orientation="vertical"
+    android:weightSum="100"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ba.cpm.com.lorealba.dailyentry.SampleTesterStockActivity"
+    tools:showIn="@layout/activity_sample_tester_stock">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="2dp"
+        android:layout_weight="26"
+        card_view:cardBackgroundColor="@android:color/transparent"
+        card_view:cardCornerRadius="@dimen/size_18dp"
+        card_view:cardElevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:background="@drawable/rouded_corner_white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/sample_photos_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Take Photos Of Sample Stock"
+                android:textColor="@color/grayfor_login"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="12">
+
+                <ImageView
+                    android:id="@+id/sample_img_one"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:src="@mipmap/camera_orange" />
+
+                <ImageView
+                    android:id="@+id/sample_img_two"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:src="@mipmap/camera_orange" />
+
+                <ImageView
+                    android:id="@+id/sample_img_three"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:src="@mipmap/camera_orange" />
+
+                <ImageView
+                    android:id="@+id/sample_img_four"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:src="@mipmap/camera_orange" />
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/btn_add_stock"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="@dimen/text_25dp"
+                android:layout_marginBottom="12sp"
+                android:src="@drawable/add" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/drawer_layout_recycle_store"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:layout_weight="64"
+        android:visibility="invisible">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="12">
+
+        <ImageView
+            android:id="@+id/img_daily_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginLeft="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/daily_stock" />
+
+        <ImageView
+            android:id="@+id/img_damaged_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/damaged_stock" />
+
+        <ImageView
+            android:id="@+id/img_invert_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/inward_stock" />
+
+
+        <ImageView
+            android:id="@+id/img_tester_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="3"
+            android:src="@drawable/tester_stock" />
+
+    </LinearLayout>
+
+</LinearLayout>
