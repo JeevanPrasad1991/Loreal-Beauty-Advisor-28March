@@ -200,7 +200,7 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                 }
             });
         } else {
-            
+
             editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
             editor.apply();
             pd.setMessage("Downloading Images");
