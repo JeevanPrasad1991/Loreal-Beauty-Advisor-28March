@@ -10,6 +10,7 @@
     <include layout="@layout/content_dealer_board" />
 
     <ImageView
+        android:id="@+id/take_backup"
         android:layout_width="48px"
         android:layout_height="48px"
         android:layout_gravity="right"

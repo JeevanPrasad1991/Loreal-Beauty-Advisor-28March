@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +20,16 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ba.cpm.com.lorealba.Database.Lorealba_Database;
 import ba.cpm.com.lorealba.LorealBaLoginActivty;
 import ba.cpm.com.lorealba.MainMenuActivity;
 import ba.cpm.com.lorealba.R;
@@ -30,10 +37,10 @@ import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.delegates.NavMenuItemGetterSetter;
 import ba.cpm.com.lorealba.download.DownloadActivity;
 
-public class DealerBoardActivity extends AppCompatActivity {
+public class DealerBoardActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView recycle_recce, stock_recycle, recycler_self;
     ValueAdapter adapter, stock_adapter, posm_adapter;
-    ImageView btn_offerat_mystore;
+    ImageView btn_offerat_mystore,take_backup;
     Context context;
 
     @Override
@@ -47,6 +54,7 @@ public class DealerBoardActivity extends AppCompatActivity {
         recycler_self = (RecyclerView) findViewById(R.id.recycler_self);
 
         btn_offerat_mystore = (ImageView) findViewById(R.id.btn_offerat_mystore);
+        take_backup = (ImageView) findViewById(R.id.take_backup);
         adapter = new ValueAdapter(getApplicationContext(), getdata());
         recycle_recce.setAdapter(adapter);
         recycle_recce.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -69,6 +77,15 @@ public class DealerBoardActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.take_backup:
+                take_backup();
+                break;
+        }
     }
 
     public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.MyViewHolder> {
@@ -248,5 +265,55 @@ public class DealerBoardActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    private void take_backup(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context).setTitle("Parinaam");
+        builder1.setMessage("Are you sure you want to take the backup of your data ?").setCancelable(false).setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @SuppressWarnings("resource")
+                    public void onClick(DialogInterface dialog,
+                                        int id) {
+
+                        try {
+                            File file = new File(Environment.getExternalStorageDirectory(), "LorealBaPitchBackup");
+                            if (!file.isDirectory()) {
+                                file.mkdir();
+                            }
+                            File sd = Environment.getExternalStorageDirectory();
+                            File data = Environment.getDataDirectory();
+                            if (sd.canWrite()) {
+                                long date = System.currentTimeMillis();
+                                SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yy");
+                                String dateString = sdf.format(date);
+                                String currentDBPath = "//data//cpm.com.lorealbapitch//databases//" + Lorealba_Database.DATABASE_NAME;
+                                String backupDBPath = "LorealBaPitchBackup" + dateString.replace('/', '-');
+                                File currentDB = new File(data, currentDBPath);
+                                File backupDB = new File("/mnt/sdcard/LorealBaPitchBackup/", backupDBPath);
+                                Snackbar.make(btn_offerat_mystore, "Database Exported Successfully.", Snackbar.LENGTH_SHORT).show();
+                                if (currentDB.exists()) {
+                                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                                    dst.transferFrom(src, 0, src.size());
+                                    src.close();
+                                    dst.close();
+                                }
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert1 = builder1.create();
+        alert1.show();
+
     }
 }
