@@ -116,4 +116,21 @@
 
     <string name="title_activity_one_qad">One QAD</string>
     <string name="oneqad_comment">oops your answer is wrong. Correct answer is highlighted in green.</string>
+
+
+    <string name="bluetooth_header_text">BlueTooth</string>
+    <string name="bluetooth_none_paired">No devices have been paired</string>
+    <string name="bluetooth_scanning">scanning for devices...</string>
+    <string name="bluetooth_select_device">select a device to connect</string>
+    <string name="bluetooth_none_found">No devices found</string>
+    <string name="bluetooth_btnSearch">Connect  Bluetooth  Printer</string>
+    <string name="bluetooth_btnSend">Print</string>
+    <string name="bluetooth_qr_code_Send">2D Barcode Print</string>
+    <string name="bluetooth_btn_test">Print Test Page</string>
+    <string name="bluetooth_btnClose">Close</string>
+    <string name="bluetooth_txt_content"></string>
+    <string name="bluetooth_menu_settings">set</string>
+    <string name="bluetooth_strLang">en</string>
+    <string name="bluetooth_button_scan">Scan for devices</string>
+    <string name="bluetooth_qr_code_Send_string">SDK 2D-Code print test.</string>
 </resources>

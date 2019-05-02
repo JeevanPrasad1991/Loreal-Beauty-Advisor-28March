@@ -10,8 +10,7 @@ import ba.cpm.com.lorealba.gsonGetterSetter.TableStructureGetterSetter;
  */
 
 public class ReferenceVariablesForDownloadActivity {
-    protected TableStructureGetterSetter tableStructureObj;
+    protected TableStructureGetterSetter tableStructureObj,product_masterObject;
     protected JCPGetterSetter jcpObject;
     protected NonWorkingReasonGetterSetter nonWorkingObj;
-    protected AuditQuestionGetterSetter auditQuestionObject;
 }

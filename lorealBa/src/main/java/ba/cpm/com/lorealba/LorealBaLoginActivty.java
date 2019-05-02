@@ -228,7 +228,8 @@ public class LorealBaLoginActivty extends AppCompatActivity {
                                     editor.putString(CommonString.KEY_NOTICE_BOARD_LINK, userObject.getResult().get(0).getNotice_board());
                                     editor.commit();
                                     if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
-                                        startActivity(new Intent(context, OneQADActivity.class));
+                                        //startActivity(new Intent(context, OneQADActivity.class));
+                                        startActivity(new Intent(context, DealerBoardActivity.class));
                                         LorealBaLoginActivty.this.finish();
                                     } else {
                                         Intent intent = new Intent(getBaseContext(), AutoUpdateActivity.class);
@@ -253,7 +254,6 @@ public class LorealBaLoginActivty extends AppCompatActivity {
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         loading.dismiss();
                         AlertandMessages.showAlertlogin(LorealBaLoginActivty.this, CommonString.MESSAGE_INTERNET_NOT_AVALABLE);
-
                     }
                 });
 
@@ -341,8 +341,8 @@ public class LorealBaLoginActivty extends AppCompatActivity {
         editor = preferences.edit();
         museridView = findViewById(ba.cpm.com.lorealba.R.id.userid);
         mPasswordView = findViewById(ba.cpm.com.lorealba.R.id.password);
-        museridView.setText("test");
-        mPasswordView.setText("cpm123");
+        museridView.setText("firoz.alam@in.cpm-int.com");
+        mPasswordView.setText("Cpm@123%");
         museridSignInButton = findViewById(ba.cpm.com.lorealba.R.id.user_login_button);
         museridSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override

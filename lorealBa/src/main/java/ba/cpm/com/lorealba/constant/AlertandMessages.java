@@ -63,7 +63,6 @@ public class AlertandMessages {
     }
 
     public void backpressedAlert(final Activity activity) {
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Alert");
         builder.setMessage("Do you want to exit? Filled data will be lost").setCancelable(false)
@@ -113,6 +112,26 @@ public class AlertandMessages {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    public static void alertdialog_forall(final Activity activity,String msg) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Parinaam");
+        builder.setMessage(msg).setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 
 
 }

@@ -26,7 +26,6 @@
             android:layout_marginTop="5dp"
             android:orientation="vertical">
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,8 +35,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:padding="10dp"
+                    android:layout_weight="3.5"
+                    android:padding="8dp"
                     android:text="Customer Name"
                     android:textColor="@color/grayfor_login"
                     android:textSize="@dimen/text_14sp" />
@@ -46,18 +45,29 @@
                     android:id="@+id/edt_customer"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6"
+                    android:layout_weight="4.5"
                     android:background="@drawable/rouded_corner_pinki"
                     android:hint="Customer name"
-                    android:padding="10dp"
+                    android:padding="8dp"
                     android:textColor="@color/grayfor_login"
                     android:textSize="@dimen/text_14sp" />
+
+                <CheckBox
+                    android:id="@+id/no_name_checkbox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="2"
+                    android:textColor="@color/grayfor_login"
+                    android:checked="false"
+                    android:text="No" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 android:weightSum="10">
@@ -65,8 +75,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:padding="10dp"
+                    android:layout_weight="3.5"
+                    android:padding="8dp"
                     android:text="Mobile Number"
                     android:textColor="@color/grayfor_login"
                     android:textSize="@dimen/text_14sp" />
@@ -75,21 +85,71 @@
                     android:id="@+id/edt_mobile_no"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6"
+                    android:layout_weight="4.5"
                     android:background="@drawable/rouded_corner_pinki"
                     android:hint="Mobile No."
                     android:inputType="number"
                     android:maxLength="10"
-                    android:padding="10dp"
+                    android:padding="8dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_14sp" />
+
+                <CheckBox
+                    android:id="@+id/mobile_checkbox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="2"
+                    android:textColor="@color/grayfor_login"
+                    android:checked="false"
+                    android:text="No" />
+
             </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="10">
+
+                <EditText
+                    android:id="@+id/edt_otp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/custom_layout_margin"
+                    android:layout_marginRight="@dimen/custom_layout_margin"
+                    android:layout_weight="6"
+                    android:background="@drawable/rouded_corner_pinki"
+                    android:gravity="center"
+                    android:hint="OTP"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_14sp"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/consent_checkbox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="4"
+                    android:checked="false"
+                    android:text="Consent" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
 
     <android.support.v7.widget.CardView
+        android:id="@+id/card_layout_scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -109,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:padding="10dp"
+                android:padding="6dp"
                 android:text="Tap To Enter Data"
                 android:textColor="@color/grayfor_login"
                 android:textSize="@dimen/text_14sp" />
@@ -164,6 +224,7 @@
 
 
     <android.support.v7.widget.CardView
+        android:id="@+id/card_layout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -184,7 +245,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="4"
                 android:gravity="center_vertical"
-                android:padding="10dp"
+                android:padding="6dp"
                 android:text="Item Sold"
                 android:textColor="@color/grayfor_login"
                 android:textSize="@dimen/text_14sp" />
@@ -195,7 +256,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.5"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="6dp"
                 android:text="QTY"
                 android:textColor="@color/grayfor_login"
                 android:textSize="@dimen/text_14sp" />
@@ -206,7 +267,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="6dp"
                 android:text="Amount"
                 android:textColor="@color/grayfor_login"
                 android:textSize="@dimen/text_14sp" />
@@ -217,7 +278,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.5"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="6dp"
                 android:text=""
                 android:textColor="@color/grayfor_login"
                 android:textSize="@dimen/text_14sp" />

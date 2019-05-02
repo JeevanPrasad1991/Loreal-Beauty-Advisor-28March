@@ -3,10 +3,10 @@ package ba.cpm.com.lorealba.dailyentry;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +14,16 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,16 +33,21 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import ba.cpm.com.lorealba.R;
+import ba.cpm.com.lorealba.constant.AlertandMessages;
 import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.gsonGetterSetter.InvoiceGetterSetter;
-import ba.cpm.com.lorealba.gsonGetterSetter.ReportsGetterSetter;
-import ba.cpm.com.lorealba.scanner.ScanActivity;
+import ba.cpm.com.lorealba.retrofit.PostApi;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProformaInvoiceActivity extends AppCompatActivity implements View.OnClickListener {
     EditText edt_customer, edt_mobile_no;
@@ -54,7 +59,11 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
     String product = "", product_scan_code = "";
     FloatingActionButton fab;
     TextView qrcode_text;
-    EditText edt_scan_code, edt_proforma_sku_qty;
+    EditText edt_scan_code, edt_proforma_sku_qty, edt_otp;
+    CardView card_layout_scan, card_layout_title;
+    CheckBox mobile_checkbox, no_name_checkbox;
+    boolean no_name_flag = false, no_mobile_no_flag = false;
+    ProgressDialog loading;
     Context context;
 
     @Override
@@ -78,36 +87,67 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         edt_mobile_no = (EditText) findViewById(R.id.edt_mobile_no);
         drawer_layout_recycle_store = (RecyclerView) findViewById(R.id.drawer_layout_recycle_store);
 
+        mobile_checkbox = (CheckBox) findViewById(R.id.mobile_checkbox);
+        no_name_checkbox = (CheckBox) findViewById(R.id.no_name_checkbox);
+
+        card_layout_scan = (CardView) findViewById(R.id.card_layout_scan);
+        card_layout_title = (CardView) findViewById(R.id.card_layout_title);
+
         btn_scan.setOnClickListener(this);
         btn_enter_code.setOnClickListener(this);
         btn_sku_list.setOnClickListener(this);
         fab.setOnClickListener(this);
         img_home.setOnClickListener(this);
+        mobile_checkbox.setOnClickListener(this);
+        no_name_checkbox.setOnClickListener(this);
+
+
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.mobile_checkbox:
+                if (mobile_checkbox.isChecked()) {
+                    no_mobile_no_flag = true;
+                    edt_mobile_no.setText("0000000000");
+                } else {
+                    edt_mobile_no.setText("");
+                    no_mobile_no_flag = false;
+                }
+                break;
+            case R.id.no_name_checkbox:
+                if (no_name_checkbox.isChecked()) {
+                    no_name_flag = true;
+                    edt_customer.setText("Not Name");
+                } else {
+                    edt_customer.setText("");
+                    no_name_flag = false;
+                }
+                break;
             case R.id.btn_scan:
-                if (edt_customer.getText().toString().isEmpty()) {
-                    Snackbar.make(edt_customer, "Please enter customer name.", Snackbar.LENGTH_LONG).show();
-                } else if (edt_mobile_no.getText().toString().isEmpty()) {
-                    Snackbar.make(edt_customer, "Please enter mobile number.", Snackbar.LENGTH_LONG).show();
+                if (!no_name_flag && edt_customer.getText().toString().isEmpty()) {
+                    Snackbar.make(btn_scan, "Please enter customer name.", Snackbar.LENGTH_SHORT).show();
+                } else if (!no_mobile_no_flag && edt_mobile_no.getText().toString().isEmpty()) {
+                    Snackbar.make(btn_scan, "Please enter mobile number.", Snackbar.LENGTH_SHORT).show();
+                } else if (!no_mobile_no_flag && edt_mobile_no.getText().toString().length() < 10) {
+                    Snackbar.make(btn_scan, "Please enter atleast 10 digit contact number", Snackbar.LENGTH_SHORT).show();
                 } else {
                     show_proforma_dialog(context, true);
                 }
                 break;
 
             case R.id.btn_enter_code:
-                if (edt_customer.getText().toString().isEmpty()) {
-                    Snackbar.make(edt_customer, "Please enter customer name.", Snackbar.LENGTH_LONG).show();
-                } else if (edt_mobile_no.getText().toString().isEmpty()) {
-                    Snackbar.make(edt_customer, "Please enter mobile number.", Snackbar.LENGTH_LONG).show();
+                if (!no_name_flag && edt_customer.getText().toString().isEmpty()) {
+                    Snackbar.make(btn_scan, "Please enter customer name.", Snackbar.LENGTH_SHORT).show();
+                } else if (!no_mobile_no_flag && edt_mobile_no.getText().toString().isEmpty()) {
+                    Snackbar.make(btn_scan, "Please enter mobile number.", Snackbar.LENGTH_SHORT).show();
+                } else if (!no_mobile_no_flag && edt_mobile_no.getText().toString().length() < 10) {
+                    Snackbar.make(btn_scan, "Please enter atleast 10 digit contact number", Snackbar.LENGTH_SHORT).show();
                 } else {
                     show_proforma_dialog(context, false);
                 }
-
                 break;
 
             case R.id.fab:
@@ -203,6 +243,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                edt_scan_code.setText("8901526510320");
                 if (flag_for_rl && qrcode_text.getText().toString().isEmpty()) {
                     Snackbar.make(btn_add, "Please Scan Bar Code.", Snackbar.LENGTH_LONG).show();
                 } else if (!flag_for_rl && edt_scan_code.getText().toString().isEmpty()) {
@@ -402,4 +443,78 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    public void getotp_from_mobile_no(String jsondata) {
+        try {
+            loading = ProgressDialog.show(context, "Processing", "Please wait...", false, false);
+            final OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS).connectTimeout(20, TimeUnit.SECONDS).build();
+            RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsondata.toString());
+            Retrofit adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient).addConverterFactory(GsonConverterFactory.create()).build();
+            PostApi api = adapter.create(PostApi.class);
+            retrofit2.Call<ResponseBody> call = api.getCoverageDetail(jsonData);
+            call.enqueue(new retrofit2.Callback<ResponseBody>() {
+                @Override
+                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    ResponseBody responseBody = response.body();
+                    String data = null;
+                    if (responseBody != null && response.isSuccessful()) {
+                        try {
+                            data = response.body().string();
+                            if (!data.equals("0")) {
+                                edt_otp.setVisibility(View.VISIBLE);
+                                loading.dismiss();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            loading.dismiss();
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                    loading.dismiss();
+                    AlertandMessages.showAlertlogin((Activity) context, t.toString());
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            loading.dismiss();
+        }
+    }
+
+    private void otpedittext(Context context) {
+        edt_otp.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals("")) {
+                    int otp_count = Integer.parseInt(s.toString());
+                    int length = (int) (Math.log10(otp_count) + 1);
+                    if (length == 4) {
+                        if (s.toString().equals("")) {
+                            mobile_checkbox.setEnabled(false);
+                            edt_otp.setText(s.toString());
+                            card_layout_scan.setVisibility(View.VISIBLE);
+                            card_layout_title.setVisibility(View.VISIBLE);
+                            drawer_layout_recycle_store.setVisibility(View.VISIBLE);
+                        } else {
+                            edt_otp.setError("Incurrect OTP");
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
 }

@@ -14,7 +14,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="4"
         android:gravity="center_vertical"
-        android:padding="10dp"
+        android:padding="8dp"
         android:text="Item Sold"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_13sp" />
@@ -26,7 +26,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1.5"
         android:gravity="center_vertical"
-        android:padding="10dp"
+        android:padding="8dp"
         android:text="QTY"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_xsmall" />
@@ -38,7 +38,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="2"
         android:gravity="center_vertical"
-        android:padding="10dp"
+        android:padding="8dp"
         android:text="Amount"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_xsmall" />
@@ -49,5 +49,5 @@
         android:layout_gravity="center"
         android:layout_weight="1.5"
         android:gravity="center"
-        android:src="@drawable/edit" />
+        android:src="@mipmap/ic_delete_forever_black_48dp" />
 </LinearLayout>

@@ -38,26 +38,144 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="6"
+                android:layout_weight="5"
                 android:gravity="center_vertical"
-                android:text="Proforma Invoice"
+                android:text="Print Invoice"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_18dp" />
+
+
+            <ImageView
+                android:id="@+id/img_printer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/printer_icon" />
         </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_report_proforma_invoice" />
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="@dimen/size_18dp"
-        android:src="@mipmap/ic_save_white" />
+        android:orientation="vertical">
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_dark_background" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="Total (INR) "
+                android:textColor="@color/black"
+                android:textSize="@dimen/store_entry_text_size"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/text_inr_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="330.00"
+                android:textColor="@color/black"
+                android:textSize="@dimen/store_entry_text_size"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_dark_background" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="3dp"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_vertical"
+                android:padding="6dp"
+                android:text="Confirm Billing at POS"
+                android:textColor="@color/black"
+                android:textSize="@dimen/store_entry_text_size"
+                android:textStyle="normal" />
+
+            <Switch
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="2"
+                android:background="@drawable/rouded_corner_grey"
+                android:checked="false"
+                android:gravity="center_vertical"
+                android:padding="6dp"
+                android:textColor="@color/black"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/store_entry_text_size"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+
+        <EditText
+            android:id="@+id/edt_otp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/custom_layout_margin"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="@dimen/custom_layout_margin"
+            android:layout_weight="6"
+            android:background="@drawable/rouded_corner_pinki"
+            android:gravity="center"
+            android:hint="OTP"
+            android:inputType="number"
+            android:maxLength="4"
+            android:padding="8dp"
+            android:visibility="gone"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_14sp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="@dimen/size_18dp"
+            android:src="@mipmap/ic_save_white" />
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
+

@@ -28,6 +28,7 @@ import ba.cpm.com.lorealba.MainMenuActivity;
 import ba.cpm.com.lorealba.R;
 import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.delegates.NavMenuItemGetterSetter;
+import ba.cpm.com.lorealba.download.DownloadActivity;
 
 public class DealerBoardActivity extends AppCompatActivity {
     RecyclerView recycle_recce, stock_recycle, recycler_self;
@@ -94,7 +95,10 @@ public class DealerBoardActivity extends AppCompatActivity {
             holder.icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (current.getIconImg() == R.drawable.attendance) {
+                    if (current.getIconImg() == R.drawable.data_sink) {
+                        startActivity(new Intent(context, DownloadActivity.class));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    } else if (current.getIconImg() == R.drawable.attendance) {
                         startActivity(new Intent(context, AttendanceActivity.class));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.store_work) {

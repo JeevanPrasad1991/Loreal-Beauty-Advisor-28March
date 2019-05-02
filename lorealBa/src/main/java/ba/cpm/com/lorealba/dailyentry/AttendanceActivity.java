@@ -70,7 +70,6 @@ public class AttendanceActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void iduserinterface() {
-
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = preferences.edit();
         store_cd = preferences.getString(CommonString.KEY_STORE_ID, null);
@@ -141,7 +140,7 @@ public class AttendanceActivity extends AppCompatActivity implements View.OnClic
                                 overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                                 AttendanceActivity.this.finish();
                             } else {
-                                startActivity(new Intent(context, StoreimageActivity.class));
+                                startActivity(new Intent(context, StoreListActivity.class));
                                 overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                                 AttendanceActivity.this.finish();
                             }

@@ -131,6 +131,18 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                 throw new java.lang.Exception();
                                             }
                                             break;
+
+                                            case "Product_Master":
+                                            if (!data.contains("No Data")) {
+                                                product_masterObject = new Gson().fromJson(data, TableStructureGetterSetter.class);
+                                                if (product_masterObject != null && !db.insertproductmasterdata(product_masterObject)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Product Master data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
                                         case "Non_Working_Reason":
                                             if (!data.contains("No Data")) {
                                                 nonWorkingObj = new Gson().fromJson(data, NonWorkingReasonGetterSetter.class);

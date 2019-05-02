@@ -15,8 +15,11 @@ public class TableStructureGetterSetter {
         return tableStructure;
     }
 
-    public void setTableStructure(List<TableStructure> tableStructure) {
-        this.tableStructure = tableStructure;
-    }
+    @SerializedName("Product_Master")
+    @Expose
+    private List<ProductMaster> productMaster = null;
 
+    public List<ProductMaster> getProductMaster() {
+        return productMaster;
+    }
 }

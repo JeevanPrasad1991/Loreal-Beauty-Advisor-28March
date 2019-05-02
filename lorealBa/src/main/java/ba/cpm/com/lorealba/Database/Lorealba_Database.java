@@ -22,6 +22,8 @@ import ba.cpm.com.lorealba.gsonGetterSetter.JCPGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.JourneyPlan;
 import ba.cpm.com.lorealba.gsonGetterSetter.NonWorkingReason;
 import ba.cpm.com.lorealba.gsonGetterSetter.NonWorkingReasonGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.ProductMaster;
+import ba.cpm.com.lorealba.gsonGetterSetter.TableStructureGetterSetter;
 
 /**
  * /**
@@ -167,6 +169,49 @@ public class Lorealba_Database extends SQLiteOpenHelper {
             return false;
         }
     }
+
+
+    public boolean insertproductmasterdata(TableStructureGetterSetter data) {
+        db.delete("Product_Master", null, null);
+        List<ProductMaster> productList = data.getProductMaster();
+
+        ContentValues values = new ContentValues();
+        try {
+            if (productList.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < productList.size(); i++) {
+                values.put("ProductId", productList.get(i).getProductId());
+                values.put("LorealCode", productList.get(i).getLorealCode());
+                values.put("ProductName", productList.get(i).getProductName());
+                values.put("ProductType", productList.get(i).getProductType());
+                values.put("NuanceId", productList.get(i).getNuanceId());
+                values.put("NuanceName", productList.get(i).getNuanceName());
+                values.put("SubAxeId", productList.get(i).getSubAxeId());
+                values.put("SubAxeName", productList.get(i).getSubAxeName());
+                values.put("AxeId", productList.get(i).getAxeId());
+                values.put("AxeName", productList.get(i).getAxeName());
+                values.put("ReferenceId", productList.get(i).getReferenceId());
+                values.put("ReferenceName", productList.get(i).getReferenceName());
+                values.put("SubBrandId", productList.get(i).getSubBrandId());
+                values.put("SubBrandName", productList.get(i).getSubBrandName());
+                values.put("BrandId", productList.get(i).getBrandId());
+                values.put("BrandName", productList.get(i).getBrandName());
+                values.put("SignatureId", productList.get(i).getSignatureId());
+                values.put("SignatureName", productList.get(i).getSignatureName());
+                long id = db.insert("Product_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Exception in Jcp", ex.toString());
+            return false;
+        }
+    }
+
 
     public boolean insertNonWorkingData(NonWorkingReasonGetterSetter nonWorkingdata) {
         db.delete("Non_Working_Reason", null, null);

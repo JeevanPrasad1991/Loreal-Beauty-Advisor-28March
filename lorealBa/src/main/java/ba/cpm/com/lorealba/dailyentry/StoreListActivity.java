@@ -119,8 +119,12 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 if (preferences.getString(CommonString.KEY_ATTENDANCE, "") != null && !preferences.getString(CommonString.KEY_ATTENDANCE, "").equals("") && preferences.getString(CommonString.KEY_ATTENDANCE, "").equalsIgnoreCase("Leave") ||
                         preferences.getString(CommonString.KEY_ATTENDANCE, "") != null && !preferences.getString(CommonString.KEY_ATTENDANCE, "").equals("") && preferences.getString(CommonString.KEY_ATTENDANCE, "").equalsIgnoreCase("Weekoff")) {
                     Snackbar.make(fab, getString(R.string.present_action), Snackbar.LENGTH_LONG).show();
-                } else if (preferences.getString(CommonString.KEY_ATTENDANCE, "") != null && !preferences.getString(CommonString.KEY_ATTENDANCE, "").equals("") && preferences.getString(CommonString.KEY_ATTENDANCE, "").equalsIgnoreCase("Present")) {
                     Intent in = new Intent(StoreListActivity.this, DealerBoardActivity.class);
+                    startActivity(in);
+                    StoreListActivity.this.finish();
+                    overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                } else if (preferences.getString(CommonString.KEY_ATTENDANCE, "") != null && !preferences.getString(CommonString.KEY_ATTENDANCE, "").equals("") && preferences.getString(CommonString.KEY_ATTENDANCE, "").equalsIgnoreCase("Present")) {
+                    Intent in = new Intent(StoreListActivity.this, StoreimageActivity.class);
                     startActivity(in);
                     overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                 } else {
@@ -543,10 +547,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     }
 
     private synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
     }
 
     private void createLocationRequest() {
@@ -613,11 +614,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     private void deletecoverageData(final Context context, final JourneyPlan current) {
         try {
             loading = ProgressDialog.show(StoreListActivity.this, "Processing", "Please wait...", false, false);
-            final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .readTimeout(20, TimeUnit.SECONDS)
-                    .writeTimeout(20, TimeUnit.SECONDS)
-                    .connectTimeout(20, TimeUnit.SECONDS)
-                    .build();
+            final OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS).connectTimeout(20, TimeUnit.SECONDS).build();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("StoreId", current.getStoreId().toString());
             jsonObject.put("VisitDate", current.getVisitDate());
