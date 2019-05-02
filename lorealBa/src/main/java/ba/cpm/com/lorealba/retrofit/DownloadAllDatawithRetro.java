@@ -127,6 +127,7 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                     pd.dismiss();
                                                     AlertandMessages.showSnackbarMsg(context, "JCP data not saved");
                                                 }
+                                                
                                             } else {
                                                 throw new java.lang.Exception();
                                             }
