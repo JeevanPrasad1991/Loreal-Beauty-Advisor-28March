@@ -127,7 +127,7 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                     pd.dismiss();
                                                     AlertandMessages.showSnackbarMsg(context, "JCP data not saved");
                                                 }
-                                                
+
                                             } else {
                                                 throw new java.lang.Exception();
                                             }
@@ -200,6 +200,7 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                 }
             });
         } else {
+            
             editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
             editor.apply();
             pd.setMessage("Downloading Images");

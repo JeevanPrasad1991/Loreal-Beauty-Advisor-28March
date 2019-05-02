@@ -20,8 +20,8 @@ public class CommonString {
     public static final String KEY_STOCK_TYPE = "STOCK_TYPE";
     public static final String KEY_YYYYMMDD_DATE = "yyyymmddDate";
     public static final String KEY_STOREVISITED_STATUS = "STOREVISITED_STATUS";
-    public static String URL = "http://lba.parinaam.in/webservice/Loginservice.svc/";
-    public static String URLGORIMAG = "http://lba.parinaam.in/webservice/Imageupload.asmx/";
+    public static String URL = "http://lorealba.parinaam.in/webservice/LorealBAwebservice.svc/";
+    public static String URLGORIMAG = "http://lorealba.parinaam.in/webservice/Imageupload.asmx/";
     public static final int CAPTURE_MEDIA = 131;
     public static final String KEY_PATH = "PATH";
     public static final String KEY_VERSION = "APP_VERSION";

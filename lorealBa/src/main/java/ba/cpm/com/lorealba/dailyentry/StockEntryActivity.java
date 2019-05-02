@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -16,17 +18,24 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ba.cpm.com.lorealba.Database.Lorealba_Database;
 import ba.cpm.com.lorealba.R;
 import ba.cpm.com.lorealba.constant.CommonString;
+import ba.cpm.com.lorealba.gettersetter.FocusProductGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.StockGetterSetter;
 
 public class StockEntryActivity extends AppCompatActivity implements View.OnClickListener {
@@ -41,6 +50,16 @@ public class StockEntryActivity extends AppCompatActivity implements View.OnClic
     RecyclerView stock_recycle;
     int minteger = 0;
 
+
+   //usk
+   ExpandableListView lvExp_audit;
+   List<FocusProductGetterSetter> listDataHeader;
+    List<FocusProductGetterSetter> questionList;
+    HashMap<FocusProductGetterSetter, List<FocusProductGetterSetter>> listDataChild;
+    ExpandableListAdapter listAdapter;
+    boolean checkflag = true;
+    ArrayList<Integer> checkHeaderArray = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +70,7 @@ public class StockEntryActivity extends AppCompatActivity implements View.OnClic
         storePOSM_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle("Parinaam").setMessage(R.string.alertsaveData);
                 builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -67,6 +87,38 @@ public class StockEntryActivity extends AppCompatActivity implements View.OnClic
                     }
                 });
                 builder.show();
+
+             //usk
+              /*  lvExp_audit.clearFocus();
+                lvExp_audit.invalidateViews();
+                listAdapter.notifyDataSetChanged();
+                if (validateData(listDataChild, listDataHeader)) {
+                    db.open();
+                  //  db.insertSalesStockData(jcpGetset, listDataChild, listDataHeader);
+                    finish();
+                    overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                   *//* AlertDialog.Builder builder = new AlertDialog.Builder(FocusProductActivity.this);
+                    builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
+                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            db.open();
+                            db.insertSalesStockData(jcpGetset, listDataChild, listDataHeader);
+                            finish();
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }
+                    });
+                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    builder.show();*//*
+                } else {
+
+                    Snackbar.make(lvExp_audit, "Please fill Sku Stock", Snackbar.LENGTH_SHORT).show();
+                }*/
             }
         });
 
@@ -89,6 +141,8 @@ public class StockEntryActivity extends AppCompatActivity implements View.OnClic
         img_damaged_stock = (ImageView) findViewById(R.id.img_damaged_stock);
         img_invert_stock = (ImageView) findViewById(R.id.img_invert_stock);
         TextView textv_sample = (TextView) findViewById(R.id.textv_sample);
+
+        lvExp_audit=(ExpandableListView)findViewById(R.id.lvExp_audit);
 
 
         img_home.setOnClickListener(this);
@@ -123,6 +177,96 @@ public class StockEntryActivity extends AppCompatActivity implements View.OnClic
         db = new Lorealba_Database(context);
         db.open();
         prepareListData();
+
+
+      /*  //usk
+      //  prepareListData();
+
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        lvExp_audit.setAdapter(listAdapter);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++){
+            lvExp_audit.expandGroup(i);
+        }
+
+        lvExp_audit.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                lvExp_audit.invalidate();
+
+                int lastItem = firstVisibleItem + visibleItemCount;
+
+                if (firstVisibleItem == 0) {
+                    storePOSM_fab.show();//.setVisibility(View.VISIBLE);
+                } else if (lastItem == totalItemCount) {
+                    storePOSM_fab.hide();//setVisibility(View.INVISIBLE);
+                } else {
+                    storePOSM_fab.show();//setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView arg0, int arg1) {
+
+                InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (getCurrentFocus() != null) {
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    getCurrentFocus().clearFocus();
+                }
+                lvExp_audit.invalidateViews();
+            }
+        });
+
+        // Listview Group click listener
+        lvExp_audit.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
+                return false;
+            }
+        });
+
+        // Listview Group expanded listener
+        lvExp_audit.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (getWindow().getCurrentFocus() != null) {
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    getCurrentFocus().clearFocus();
+                }
+            }
+        });
+
+        // Listview Group collasped listener
+        lvExp_audit.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+
+                InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (getWindow().getCurrentFocus() != null) {
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    getCurrentFocus().clearFocus();
+                }
+            }
+        });
+
+        // Listview on child click listener
+        lvExp_audit.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+
+                return false;
+            }
+        });
+*/
 
     }
 
@@ -487,4 +631,246 @@ public class StockEntryActivity extends AppCompatActivity implements View.OnClic
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+
+    public class ExpandableListAdapter extends BaseExpandableListAdapter {
+        private Context _context;
+        private List<FocusProductGetterSetter> _listDataHeader;
+        private HashMap<FocusProductGetterSetter, List<FocusProductGetterSetter>> _listDataChild;
+
+        public ExpandableListAdapter(Context context, List<FocusProductGetterSetter> listDataHeader,
+                                     HashMap<FocusProductGetterSetter, List<FocusProductGetterSetter>> listChildData) {
+            this._context = context;
+            this._listDataHeader = listDataHeader;
+            this._listDataChild = listChildData;
+        }
+
+        @Override
+        public Object getChild(int groupPosition, int childPosititon) {
+            return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
+        }
+
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+
+        @Override
+        public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild,
+                                 View convertView, ViewGroup parent) {
+
+            final FocusProductGetterSetter childText = (FocusProductGetterSetter) getChild(groupPosition, childPosition);
+            ViewHolder holder = null;
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.list_item_stock_entory, null);
+                holder = new ViewHolder();
+                holder.cardView = convertView.findViewById(R.id.card_view);
+                holder.ed_Stock = convertView.findViewById(R.id.ed_Stock);
+
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            TextView txtListChild = convertView.findViewById(R.id.lblListItem);
+            txtListChild.setText(childText.getSku());
+            final ViewHolder finalHolder = holder;
+
+/*
+            holder.ed_Stock.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    final EditText Caption = (EditText) v;
+                    String value1 = Caption.getText().toString().replaceFirst("^0+(?!$)", "");
+                    if (value1.equals("")) {
+                        _listDataChild.get(listDataHeader.get(groupPosition))
+                                .get(childPosition).setStock("");
+                    } else {
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setStock(value1);
+                    }
+
+                }
+            });
+*/
+            holder.stock_img_plus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    minteger = minteger + 1;
+                    if (minteger ==0){
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setStock("0");
+                    }else {
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setStock(minteger+"");
+                    }
+
+                }
+            });
+
+            holder.stock_img_minus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    minteger = minteger - 1;
+                    if (minteger<0){
+                        Snackbar.make(lvExp_audit, "Please stock value less than zero.", Snackbar.LENGTH_SHORT).show();
+
+                    }else {
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setStock(minteger+"");
+                    }
+                }
+            });
+
+          /*  holder.stock_img_plus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    minteger = minteger + 1;
+                    holder.stock_text_value.setText("" + minteger);
+                    holder.stock_text_value.setId(position);
+                }
+            });
+
+            holder.stock_img_minus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    minteger = minteger - 1;
+                    holder.stock_text_value.setText("" + minteger);
+                    holder.stock_text_value.setId(position);
+                }
+            });*/
+
+            holder.ed_Stock.setText(childText.getStock());
+
+            if (!checkflag) {
+                boolean tempflag = false;
+                if (_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getStock().equals("")) {
+                    tempflag = true;
+                }
+                if (tempflag) {
+                    holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.red));
+                } else {
+                    holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
+                }
+            } else {
+                holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
+            }
+
+            return convertView;
+        }
+
+        @Override
+        public int getChildrenCount(int groupPosition) {
+            return this._listDataChild.get(this._listDataHeader.get(groupPosition)).size();
+        }
+
+        @Override
+        public Object getGroup(int groupPosition) {
+            return this._listDataHeader.get(groupPosition);
+        }
+
+        @Override
+        public int getGroupCount() {
+            return this._listDataHeader.size();
+        }
+
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        @Override
+        public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+            final FocusProductGetterSetter headerTitle = (FocusProductGetterSetter) getGroup(groupPosition);
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.list_group_stock_entry, null);
+            }
+            TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+            lblListHeader.setText(headerTitle.getBrand());
+            if (!checkflag) {
+                if (checkHeaderArray.contains(groupPosition)) {
+                    lblListHeader.setBackgroundColor(getResources().getColor(R.color.red));
+                } else {
+                    lblListHeader.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
+                }
+            } else {
+                lblListHeader.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
+            }
+            return convertView;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
+    }
+
+    public class ViewHolder {
+      //  EditText ed_Stock;
+        TextView ed_Stock;
+        Button stock_img_plus,stock_img_minus;
+        CardView cardView;
+    }
+
+
+/*
+    private void prepareListData() {
+
+        db.open();
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
+        listDataHeader = db.getHeaderSalesData(jcpGetset);
+        if (listDataHeader.size() > 0) {
+            for (int i = 0; i < listDataHeader.size(); i++) {
+                questionList = db.getSalesStockInsertedData(jcpGetset, listDataHeader.get(i).getBrand_id());
+                if (questionList.size() > 0) {
+                    storeAudit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
+                } else {
+                    questionList = db.getSalesStockchildData(jcpGetset, listDataHeader.get(i).getBrand_id());
+                }
+                listDataChild.put(listDataHeader.get(i), questionList); // Header, Child data
+            }
+        }
+    }
+*/
+
+
+    boolean validateData(HashMap<FocusProductGetterSetter, List<FocusProductGetterSetter>> listDataChild2,
+                         List<FocusProductGetterSetter> listDataHeader2) {
+        boolean flag = false;
+        checkHeaderArray.clear();
+        loop1:
+        for (int i = 0; i < listDataHeader2.size(); i++) {
+
+            for (int j = 0; j < listDataChild2.get(listDataHeader.get(i)).size(); j++) {
+                String stock = listDataChild.get(listDataHeader.get(i)).get(j).getStock();
+                if (stock == null || stock.equalsIgnoreCase("")) {
+                    if (!checkHeaderArray.contains(i)) {
+                        checkHeaderArray.add(i);
+                    }
+                    flag = false;
+                    break;
+                }else {
+                    flag = true;
+                }
+
+            }
+            if (!flag) {
+                break;
+            }
+        }
+        if (flag) {
+            return checkflag = true;
+        } else {
+
+            return checkflag = false;
+        }
+
+    }
+
+
 }

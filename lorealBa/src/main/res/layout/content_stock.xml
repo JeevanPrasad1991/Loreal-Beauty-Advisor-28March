@@ -62,8 +62,21 @@
         android:id="@+id/stock_recycle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         android:layout_margin="6dp"
         android:layout_weight="80"></android.support.v7.widget.RecyclerView>
+
+    <ExpandableListView
+        android:id="@+id/lvExp_audit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:layout_margin="6dp"
+        android:visibility="visible"
+        android:layout_weight="80"
+        android:scrollingCache="false" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
