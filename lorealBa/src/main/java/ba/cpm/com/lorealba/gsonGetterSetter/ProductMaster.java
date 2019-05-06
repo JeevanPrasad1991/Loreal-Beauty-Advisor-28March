@@ -58,8 +58,31 @@ public class ProductMaster {
     @Expose
     private String signatureName;
 
+    @SerializedName("EanCode")
+    @Expose
+    private String eanCode;
+    @SerializedName("Mrp")
+    @Expose
+    private Integer mrp;
+
     public Integer getProductId() {
         return productId;
+    }
+
+    public String getEanCode() {
+        return eanCode;
+    }
+
+    public void setEanCode(String eanCode) {
+        this.eanCode = eanCode;
+    }
+
+    public Integer getMrp() {
+        return mrp;
+    }
+
+    public void setMrp(Integer mrp) {
+        this.mrp = mrp;
     }
 
     public void setProductId(Integer productId) {

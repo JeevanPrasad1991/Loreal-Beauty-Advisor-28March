@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class NonWorkingReason {
 
-    @SerializedName("Reason_Id")
+    @SerializedName("ReasonId")
     @Expose
     private Integer reasonId;
     @SerializedName("Reason")
@@ -61,5 +61,4 @@ public class NonWorkingReason {
     public void setGPSMandatory(Boolean gPSMandatory) {
         this.gPSMandatory = gPSMandatory;
     }
-
 }

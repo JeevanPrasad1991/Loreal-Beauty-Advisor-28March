@@ -51,9 +51,13 @@ public class DownloadActivity extends AppCompatActivity {
             KeyNames.clear();
             keysList.clear();
             keysList.add("Table_Structure");
+            keysList.add("Journey_Plan");
+            keysList.add(" Posm_Master");
             keysList.add("Product_Master");
-//            keysList.add("Journey_Plan");
-//            keysList.add("Non_Working_Reason");
+            keysList.add("Non_Working_Reason");
+            keysList.add("Dashboard_Data");
+            keysList.add("Promotion_Master");
+            keysList.add("Non_Promotion_Reason");
 
             if (keysList.size() > 0) {
                 for (int i = 0; i < keysList.size(); i++) {

@@ -12,5 +12,5 @@ import ba.cpm.com.lorealba.gsonGetterSetter.TableStructureGetterSetter;
 public class ReferenceVariablesForDownloadActivity {
     protected TableStructureGetterSetter tableStructureObj,product_masterObject;
     protected JCPGetterSetter jcpObject;
-    protected NonWorkingReasonGetterSetter nonWorkingObj;
+    protected NonWorkingReasonGetterSetter nonWorkingObj,dashboardObject,promotionMasterObject,nonpromotionReason;
 }

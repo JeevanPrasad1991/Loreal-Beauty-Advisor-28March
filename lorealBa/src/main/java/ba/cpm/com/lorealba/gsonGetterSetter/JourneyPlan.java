@@ -5,59 +5,57 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class JourneyPlan {
-
-    @SerializedName("Store_Id")
+    @SerializedName("StoreId")
     @Expose
     private Integer storeId;
-    @SerializedName("Visit_Date")
+
+    @SerializedName("CounterId")
+    @Expose
+    private Integer counterId;
+
+    @SerializedName("VisitDate")
     @Expose
     private String visitDate;
-    @SerializedName("Store_Name")
+    @SerializedName("DistributorName")
+    @Expose
+    private String distributorName;
+    @SerializedName("StoreName")
     @Expose
     private String storeName;
-    @SerializedName("Address1")
+    @SerializedName("Address")
     @Expose
-    private String address1;
-    @SerializedName("Address2")
-    @Expose
-    private String address2;
+    private String address;
     @SerializedName("Landmark")
     @Expose
     private String landmark;
     @SerializedName("Pincode")
     @Expose
     private String pincode;
-    @SerializedName("Contact_Person")
+    @SerializedName("ContactPerson")
     @Expose
     private String contactPerson;
-    @SerializedName("Contact_No")
+    @SerializedName("ContactNo")
     @Expose
     private String contactNo;
-    @SerializedName("City")
+    @SerializedName("CityName")
     @Expose
-    private String city;
-    @SerializedName("Store_Type")
+    private String cityName;
+    @SerializedName("StoreTypeName")
     @Expose
-    private String storeType;
-    @SerializedName("Store_Category")
+    private String storeTypeName;
+    @SerializedName("StoreCategoryName")
     @Expose
-    private String storeCategory;
-    @SerializedName("Classification")
+    private String storeCategoryName;
+    @SerializedName("StateId")
     @Expose
-    private String classification;
-    @SerializedName("Region_id")
-    @Expose
-    private Integer regionId;
-    @SerializedName("Store_Type_Id")
+    private Integer stateId;
+    @SerializedName("StoreTypeId")
     @Expose
     private Integer storeTypeId;
-    @SerializedName("Classification_Id")
-    @Expose
-    private Integer classificationId;
-    @SerializedName("Store_Category_Id")
+    @SerializedName("StoreCategoryId")
     @Expose
     private Integer storeCategoryId;
-    @SerializedName("Reason_Id")
+    @SerializedName("ReasonId")
     @Expose
     private Integer reasonId;
     @SerializedName("Upload_Status")
@@ -66,30 +64,27 @@ public class JourneyPlan {
     @SerializedName("Geo_Tag")
     @Expose
     private String geoTag;
-    @SerializedName("Distributor_Id")
+    @SerializedName("DistributorId")
     @Expose
     private Integer distributorId;
-    @SerializedName("City_Id")
+    @SerializedName("ClassificationId")
     @Expose
-    private Integer cityId;
-    @SerializedName("Visibility_Location1")
+    private Integer classificationId;
+    @SerializedName("Latitude")
     @Expose
-    private String visibilityLocation1;
-    @SerializedName("Dimension1")
+    private Double latitude;
+    @SerializedName("Longitude")
     @Expose
-    private String dimension1;
-    @SerializedName("Visibility_Location2")
+    private Double longitude;
+    @SerializedName("GeoFencing")
     @Expose
-    private String visibilityLocation2;
-    @SerializedName("Dimension2")
+    private Integer geoFencing;
+    @SerializedName("StoreCode")
     @Expose
-    private String dimension2;
-    @SerializedName("Visibility_Location3")
+    private String storeCode;
+    @SerializedName("ClassificationName")
     @Expose
-    private String visibilityLocation3;
-    @SerializedName("Dimension3")
-    @Expose
-    private String dimension3;
+    private String classificationName;
 
     public Integer getStoreId() {
         return storeId;
@@ -102,9 +97,24 @@ public class JourneyPlan {
     public String getVisitDate() {
         return visitDate;
     }
+    public Integer getCounterId() {
+        return counterId;
+    }
+
+    public void setCounterId(Integer counterId) {
+        this.counterId = counterId;
+    }
 
     public void setVisitDate(String visitDate) {
         this.visitDate = visitDate;
+    }
+
+    public String getDistributorName() {
+        return distributorName;
+    }
+
+    public void setDistributorName(String distributorName) {
+        this.distributorName = distributorName;
     }
 
     public String getStoreName() {
@@ -115,20 +125,12 @@ public class JourneyPlan {
         this.storeName = storeName;
     }
 
-    public String getAddress1() {
-        return address1;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddress1(String address1) {
-        this.address1 = address1;
-    }
-
-    public String getAddress2() {
-        return address2;
-    }
-
-    public void setAddress2(String address2) {
-        this.address2 = address2;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getLandmark() {
@@ -163,44 +165,36 @@ public class JourneyPlan {
         this.contactNo = contactNo;
     }
 
-    public String getCity() {
-        return city;
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
-    public String getStoreType() {
-        return storeType;
+    public String getStoreTypeName() {
+        return storeTypeName;
     }
 
-    public void setStoreType(String storeType) {
-        this.storeType = storeType;
+    public void setStoreTypeName(String storeTypeName) {
+        this.storeTypeName = storeTypeName;
     }
 
-    public String getStoreCategory() {
-        return storeCategory;
+    public String getStoreCategoryName() {
+        return storeCategoryName;
     }
 
-    public void setStoreCategory(String storeCategory) {
-        this.storeCategory = storeCategory;
+    public void setStoreCategoryName(String storeCategoryName) {
+        this.storeCategoryName = storeCategoryName;
     }
 
-    public String getClassification() {
-        return classification;
+    public Integer getStateId() {
+        return stateId;
     }
 
-    public void setClassification(String classification) {
-        this.classification = classification;
-    }
-
-    public Integer getRegionId() {
-        return regionId;
-    }
-
-    public void setRegionId(Integer regionId) {
-        this.regionId = regionId;
+    public void setStateId(Integer stateId) {
+        this.stateId = stateId;
     }
 
     public Integer getStoreTypeId() {
@@ -209,14 +203,6 @@ public class JourneyPlan {
 
     public void setStoreTypeId(Integer storeTypeId) {
         this.storeTypeId = storeTypeId;
-    }
-
-    public Integer getClassificationId() {
-        return classificationId;
-    }
-
-    public void setClassificationId(Integer classificationId) {
-        this.classificationId = classificationId;
     }
 
     public Integer getStoreCategoryId() {
@@ -259,60 +245,52 @@ public class JourneyPlan {
         this.distributorId = distributorId;
     }
 
-    public Integer getCityId() {
-        return cityId;
+    public Integer getClassificationId() {
+        return classificationId;
     }
 
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
+    public void setClassificationId(Integer classificationId) {
+        this.classificationId = classificationId;
     }
 
-    public String getVisibilityLocation1() {
-        return visibilityLocation1;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setVisibilityLocation1(String visibilityLocation1) {
-        this.visibilityLocation1 = visibilityLocation1;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public String getDimension1() {
-        return dimension1;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setDimension1(String dimension1) {
-        this.dimension1 = dimension1;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
-    public String getVisibilityLocation2() {
-        return visibilityLocation2;
+    public Integer getGeoFencing() {
+        return geoFencing;
     }
 
-    public void setVisibilityLocation2(String visibilityLocation2) {
-        this.visibilityLocation2 = visibilityLocation2;
+    public void setGeoFencing(Integer geoFencing) {
+        this.geoFencing = geoFencing;
     }
 
-    public String getDimension2() {
-        return dimension2;
+    public String getStoreCode() {
+        return storeCode;
     }
 
-    public void setDimension2(String dimension2) {
-        this.dimension2 = dimension2;
+    public void setStoreCode(String storeCode) {
+        this.storeCode = storeCode;
     }
 
-    public String getVisibilityLocation3() {
-        return visibilityLocation3;
+    public String getClassificationName() {
+        return classificationName;
     }
 
-    public void setVisibilityLocation3(String visibilityLocation3) {
-        this.visibilityLocation3 = visibilityLocation3;
-    }
-
-    public String getDimension3() {
-        return dimension3;
-    }
-
-    public void setDimension3(String dimension3) {
-        this.dimension3 = dimension3;
+    public void setClassificationName(String classificationName) {
+        this.classificationName = classificationName;
     }
 
 }

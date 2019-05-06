@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -62,6 +63,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static ba.cpm.com.lorealba.constant.CommonFunctions.getCurrentTime;
+
 public class StoreimageActivity extends AppCompatActivity implements
         View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     ImageView img_cam, img_clicked;
@@ -86,7 +89,6 @@ public class StoreimageActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_storeimage);
-
         TextView textv_sample = (TextView) findViewById(R.id.textv_sample);
         ImageView img_home = (ImageView) findViewById(R.id.img_home);
 
@@ -190,7 +192,7 @@ public class StoreimageActivity extends AppCompatActivity implements
                                         dialog.cancel();
                                     }
                                 });
-                AlertDialog alert = builder.create();
+                alert = builder.create();
                 alert.show();
                 break;
             case R.id.img_cam_selfie:
@@ -208,15 +210,13 @@ public class StoreimageActivity extends AppCompatActivity implements
                         });
                         builder.show();
                     } else {
-                        _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") +
-                                "_" + getCurrentTime().replace(":", "") + ".jpg";
+                        _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                         _path = CommonString.FILE_PATH + _pathforcheck;
                         CommonFunctions.startAnncaCameraActivity(StoreimageActivity.this, _path);
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
-                    _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") +
-                            "_" + getCurrentTime().replace(":", "") + ".jpg";
+                    _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                     _path = CommonString.FILE_PATH + _pathforcheck;
                     CommonFunctions.startAnncaCameraActivity(StoreimageActivity.this, _path);
                 }
@@ -237,15 +237,13 @@ public class StoreimageActivity extends AppCompatActivity implements
                         });
                         builder.show();
                     } else {
-                        _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") +
-                                "_" + getCurrentTime().replace(":", "") + ".jpg";
+                        _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                         _path = CommonString.FILE_PATH + _pathforcheck;
                         CommonFunctions.startAnncaCameraActivity(StoreimageActivity.this, _path);
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
-                    _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") +
-                            "_" + getCurrentTime().replace(":", "") + ".jpg";
+                    _pathforcheck = store_cd + "_STOREIMG_" + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                     _path = CommonString.FILE_PATH + _pathforcheck;
                     CommonFunctions.startAnncaCameraActivity(StoreimageActivity.this, _path);
                 }
@@ -253,68 +251,63 @@ public class StoreimageActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btn_save_selfie:
-//                if (img_str != null) {
-//                    if (checkNetIsAvailable()) {
-                builder = new AlertDialog.Builder(StoreimageActivity.this);
-                builder.setMessage("Do you want to save the Check in Time data ?")
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        try {
-//                                                    alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-//                                                    cdata = new CoverageBean();
-//                                                    cdata.setStoreId(store_cd);
-//                                                    cdata.setVisitDate(visit_date);
-//                                                    cdata.setUserId(username);
-//                                                    cdata.setReason("");
-//                                                    cdata.setReasonid("0");
-//                                                    cdata.setLatitude(String.valueOf(lat));
-//                                                    cdata.setLongitude(String.valueOf(lon));
-//                                                    cdata.setImage(img_str);
-//                                                    cdata.setRemark("");
-//                                                    cdata.setCkeckout_image("");
-//                                                    //region Coverage Data
-//                                                    JSONObject jsonObject = new JSONObject();
-//                                                    jsonObject.put("StoreId", cdata.getStoreId());
-//                                                    jsonObject.put("VisitDate", cdata.getVisitDate());
-//                                                    jsonObject.put("Latitude", cdata.getLatitude());
-//                                                    jsonObject.put("Longitude", cdata.getLongitude());
-//                                                    jsonObject.put("ReasonId", cdata.getReasonid());
-//                                                    jsonObject.put("SubReasonId", "0");
-//                                                    jsonObject.put("Remark", cdata.getRemark());
-//                                                    jsonObject.put("ImageName", cdata.getImage());
-//                                                    jsonObject.put("AppVersion", app_ver);
-//                                                    jsonObject.put("UploadStatus", CommonString.KEY_CHECK_IN);
-//                                                    jsonObject.put("Checkout_Image", cdata.getCkeckout_image());
-//                                                    jsonObject.put("UserId", username);
-//
-//                                                    uploadCoverageIntimeDATA(jsonObject.toString());
-                                            startActivity(new Intent(StoreimageActivity.this, StoreListActivity.class));
-                                            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-                                            StoreimageActivity.this.finish();
+                if (img_str != null) {
+                    if (checkNetIsAvailable()) {
+                        builder = new AlertDialog.Builder(StoreimageActivity.this).setTitle("Parinaam").setMessage("Do you want to save the Check in Time data ?")
+                                .setCancelable(false).setPositiveButton("OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                try {
+                                                    alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                                                    cdata = new CoverageBean();
+                                                    cdata.setStoreId(store_cd);
+                                                    cdata.setVisitDate(visit_date);
+                                                    cdata.setUserId(username);
+                                                    cdata.setReason("");
+                                                    cdata.setReasonid("0");
+                                                    cdata.setLatitude(String.valueOf(lat));
+                                                    cdata.setLongitude(String.valueOf(lon));
+                                                    cdata.setImage(img_str);
+                                                    cdata.setRemark("");
+                                                    cdata.setCkeckout_image("");
+                                                    //region Coverage Data
+                                                    JSONObject jsonObject = new JSONObject();
+                                                    jsonObject.put("StoreId", cdata.getStoreId());
+                                                    jsonObject.put("VisitDate", cdata.getVisitDate());
+                                                    jsonObject.put("Latitude", cdata.getLatitude());
+                                                    jsonObject.put("Longitude", cdata.getLongitude());
+                                                    jsonObject.put("ReasonId", cdata.getReasonid());
+                                                    jsonObject.put("SubReasonId", "0");
+                                                    jsonObject.put("Remark", cdata.getRemark());
+                                                    jsonObject.put("ImageName", cdata.getImage());
+                                                    jsonObject.put("AppVersion", app_ver);
+                                                    jsonObject.put("UploadStatus", CommonString.KEY_CHECK_IN);
+                                                    jsonObject.put("Checkout_Image", cdata.getCkeckout_image());
+                                                    jsonObject.put("UserId", username);
 
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                                    uploadCoverageIntimeDATA(jsonObject.toString());
+
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int id) {
+                                        dialog.cancel();
                                     }
-                                })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(
-                                    DialogInterface dialog,
-                                    int id) {
-                                dialog.cancel();
-                            }
-                        });
-                alert = builder.create();
-                alert.show();
-//                    } else {
-//                        Snackbar.make(btn_save, "No Network Available", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-//                    }
-//                } else {
-//                    Snackbar.make(btn_save, "Please click the image", Snackbar.LENGTH_SHORT).show();
-//
-//                }
+                                });
+                        alert = builder.create();
+                        alert.show();
+                    } else {
+                        Snackbar.make(btn_save, "No Network Available", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                    }
+                } else {
+                    Snackbar.make(btn_save, "Please click the image", Snackbar.LENGTH_SHORT).show();
+
+                }
 
                 break;
 
@@ -434,6 +427,7 @@ public class StoreimageActivity extends AppCompatActivity implements
                                 database.open();
                                 database.InsertCoverageData(cdata);
                                 database.updateJaurneyPlanSpecificStoreStatus(cdata.getStoreId(), cdata.getVisitDate(), CommonString.KEY_CHECK_IN);
+                                startActivity(new Intent(StoreimageActivity.this, DealerBoardActivity.class));
                                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                                 StoreimageActivity.this.finish();
                                 loading.dismiss();
@@ -442,6 +436,12 @@ public class StoreimageActivity extends AppCompatActivity implements
                             e.printStackTrace();
                             loading.dismiss();
                         }
+                    } else {
+                        Toast.makeText(StoreimageActivity.this, "Server Not Responding.", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(StoreimageActivity.this, DealerBoardActivity.class));
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                        StoreimageActivity.this.finish();
+                        loading.dismiss();
                     }
 
                 }

@@ -22,20 +22,23 @@ public interface PostApi {
     @retrofit2.http.POST(CommonString.KEY_LOGIN_DETAILS)
     retrofit2.Call<ResponseBody> getLogindetail(@retrofit2.http.Body okhttp3.RequestBody request);
 
-    @retrofit2.http.POST("DownloadAll")
+    @retrofit2.http.POST("DownloadJson")
     Call<String> getDownloadAll(@Body RequestBody request);
 
-    @retrofit2.http.POST("DownloadAll")
+    @retrofit2.http.POST("DownloadJson")
     Call<ResponseBody> getDownloadAllUSINGLOGIN(@Body RequestBody request);
 
 
-    @retrofit2.http.POST("CoverageDetail_latest")
+    @retrofit2.http.POST("CoverageDetail")
     retrofit2.Call<ResponseBody> getCoverageDetail(@retrofit2.http.Body okhttp3.RequestBody request);
+
+    @retrofit2.http.POST("SendOTP")
+    retrofit2.Call<ResponseBody> getOTPMethod(@retrofit2.http.Body okhttp3.RequestBody request);
 
     @retrofit2.http.POST("UploadJCPDetail")
     retrofit2.Call<ResponseBody> getUploadJCPDetail(@retrofit2.http.Body okhttp3.RequestBody request);
 
-    @retrofit2.http.POST("UploadJsonDetail")
+    @retrofit2.http.POST("UploadJson")
     retrofit2.Call<ResponseBody> getUploadJsonDetail(@retrofit2.http.Body okhttp3.RequestBody request);
 
     @retrofit2.http.POST("CoverageStatusDetail")
@@ -61,7 +64,7 @@ public interface PostApi {
 
     @POST("UploadJsonDetail")
     Call<JSONObject> getUploadJsonDetailForFileList(@Body RequestBody request);
-
-
+    @retrofit2.http.POST("UploadAttendanceDetail")
+    retrofit2.Call<ResponseBody> getAttendanceDetails(@retrofit2.http.Body okhttp3.RequestBody request);
 }
 

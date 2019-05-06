@@ -22,4 +22,6 @@
     <dimen name="text_size_big">25sp</dimen>
     <dimen name="text22dp">22dp</dimen>
     <dimen name="custom_layout_margin">30dp</dimen>
+    <dimen name="custom_layout_margin_50">50dp</dimen>
+
 </resources>

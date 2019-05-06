@@ -1,17 +1,17 @@
 package ba.cpm.com.lorealba.gsonGetterSetter;
 
-public class PosmTrackingGetterSetter {
-    String posm;
+public class PromotionGetterSetter {
+    String promotion_name;
     String posm_exists_state="";
     String posm_img="";
     String posm_qr_data="";
 
-    public String getPosm() {
-        return posm;
+    public String getPromotion_name() {
+        return promotion_name;
     }
 
-    public void setPosm(String posm) {
-        this.posm = posm;
+    public void setPromotion_name(String promotion_name) {
+        this.promotion_name = promotion_name;
     }
 
     public String getPosm_exists_state() {

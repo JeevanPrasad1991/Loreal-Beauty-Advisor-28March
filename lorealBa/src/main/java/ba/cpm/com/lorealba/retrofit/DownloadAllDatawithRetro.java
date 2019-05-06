@@ -5,17 +5,27 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import ba.cpm.com.lorealba.Database.Lorealba_Database;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +35,7 @@ import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.gettersetter.ReferenceVariablesForDownloadActivity;
 import ba.cpm.com.lorealba.gsonGetterSetter.JCPGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.NonWorkingReasonGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.PromotionMaster;
 import ba.cpm.com.lorealba.gsonGetterSetter.TableStructure;
 import ba.cpm.com.lorealba.gsonGetterSetter.TableStructureGetterSetter;
 import okhttp3.MediaType;
@@ -127,13 +138,12 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                     pd.dismiss();
                                                     AlertandMessages.showSnackbarMsg(context, "JCP data not saved");
                                                 }
-
                                             } else {
                                                 throw new java.lang.Exception();
                                             }
                                             break;
 
-                                            case "Product_Master":
+                                        case "Product_Master":
                                             if (!data.contains("No Data")) {
                                                 product_masterObject = new Gson().fromJson(data, TableStructureGetterSetter.class);
                                                 if (product_masterObject != null && !db.insertproductmasterdata(product_masterObject)) {
@@ -155,6 +165,48 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                 throw new java.lang.Exception();
                                             }
                                             break;
+
+                                        case "Posm_Master":
+                                            if (!data.contains("No Data")) {
+                                                nonWorkingObj = new Gson().fromJson(data, NonWorkingReasonGetterSetter.class);
+                                                if (nonWorkingObj != null && !db.insertNonWorkingData(nonWorkingObj)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Non Working Reason not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+                                        case "Dashboard_Data":
+                                            if (!data.contains("No Data")) {
+                                                dashboardObject = new Gson().fromJson(data, NonWorkingReasonGetterSetter.class);
+                                                if (dashboardObject != null && !db.insert_dashboard_data(dashboardObject)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Dashboard Data not saved");
+                                                }
+                                            }
+                                            break;
+
+                                        case "Promotion_Master":
+                                            if (!data.contains("No Data")) {
+                                                promotionMasterObject = new Gson().fromJson(data, NonWorkingReasonGetterSetter.class);
+                                                if (promotionMasterObject != null && !db.insert_promotion_master(promotionMasterObject)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Promotion Master Data not saved");
+                                                }
+                                            }
+                                            break;
+
+                                        case "Non_Promotion_Reason":
+                                            if (!data.contains("No Data")) {
+                                                nonpromotionReason = new Gson().fromJson(data, NonWorkingReasonGetterSetter.class);
+                                                if (nonpromotionReason != null && !db.insert_non_promotion_reason(nonpromotionReason)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Non Promotion Reason Data not saved");
+                                                }
+                                            }
+                                            break;
                                     }
                                 }
                             }
@@ -163,13 +215,12 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                             if (finalJsonIndex[0] != KeyNames.size()) {
                                 editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, finalJsonIndex[0]);
                                 editor.apply();
-                                downloadDataUniversalWithoutWait(jsonStringList, KeyNames, finalJsonIndex[0],
-                                        CommonString.DOWNLOAD_ALL_SERVICE);
+                                downloadDataUniversalWithoutWait(jsonStringList, KeyNames, finalJsonIndex[0], CommonString.DOWNLOAD_ALL_SERVICE);
                             } else {
                                 editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
                                 editor.apply();
                                 pd.setMessage("Downloading Images");
-                                new DownloadImageTask().execute();
+                                new DownloadImageTask(context, promotionMasterObject).execute();
                             }
 
                         } catch (Exception e) {
@@ -204,7 +255,7 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
             editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
             editor.apply();
             pd.setMessage("Downloading Images");
-            new DownloadImageTask().execute();
+            new DownloadImageTask(context, promotionMasterObject).execute();
         }
     }
 
@@ -309,12 +360,21 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
     }
 
     class DownloadImageTask extends AsyncTask<String, String, String> {
+        Context context;
+        NonWorkingReasonGetterSetter promotionMasterObject;
+
+        DownloadImageTask(Context context, NonWorkingReasonGetterSetter promotionMasterObject) {
+            this.promotionMasterObject = promotionMasterObject;
+            this.context = context;
+        }
 
         @Override
         protected String doInBackground(String... strings) {
 
             try {
-                downloadImages();
+                if (promotionMasterObject != null) {
+                    downloadImages(promotionMasterObject);
+                }
                 return CommonString.KEY_SUCCESS;
             } catch (FileNotFoundException ex) {
                 return CommonString.KEY_FAILURE;
@@ -339,8 +399,65 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
 
     }
 
-    void downloadImages() throws IOException, FileNotFoundException {
+    void downloadImages(NonWorkingReasonGetterSetter promotion_object) throws IOException, FileNotFoundException {
+        List<PromotionMaster> data = promotion_object.getPromotionMaster();
+        for (int i = 0; i < data.size(); i++) {
+            String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+            File folder = new File(extStorageDirectory, "LorealBaPromoImages");
+            folder.mkdir();
+            if (!data.get(i).getImageName().equals("") && !data.get(i).getUrl().equals("")) {
+                File pdfFile = new File(folder, data.get(i).getUrl());
+                try {
+                    pdfFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                    downloadFile(data.get(i).getUrl(), data.get(i).getImageName(), folder);
+            }
+        }
+
     }
 
+
+    public void downloadFile(String fileUrl, String directory, File folder_path) {
+        try {
+            final int MEGABYTE = 1024 * 1024;
+            URL url = new URL(fileUrl + directory);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.getResponseCode();
+            urlConnection.connect();
+            if (urlConnection.getResponseCode() == 200) {
+                int length = urlConnection.getContentLength();
+                String size = new DecimalFormat("##.##").format((double) ((double) length / 1024)) + " KB";
+                if (!new File(folder_path.getPath() + directory).exists() && !size.equalsIgnoreCase("0 KB")) {
+                    File outputFile = new File(folder_path, directory);
+                    FileOutputStream fos = new FileOutputStream(outputFile);
+                    InputStream is1 = (InputStream) urlConnection.getInputStream();
+                    int bytes = 0;
+                    byte[] buffer = new byte[1024];
+                    int len1 = 0;
+
+                    while ((len1 = is1.read(buffer)) != -1) {
+                        bytes = (bytes + len1);
+                        fos.write(buffer, 0, len1);
+                    }
+                    fos.close();
+                    is1.close();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+        } catch (IOException e) {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+        }
+    }
 
 }

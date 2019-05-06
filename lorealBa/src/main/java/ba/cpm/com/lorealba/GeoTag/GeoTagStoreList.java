@@ -91,9 +91,9 @@ public class GeoTagStoreList extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MyViewHolder viewHolder, final int position) {
             final JourneyPlan current = data.get(position);
-            viewHolder.text_store_id.setText("Store Id - " + current.getStoreId().toString() + " (Category - " + current.getStoreCategory().trim() + ")");
-            viewHolder.storelist_storename.setText(current.getStoreName().trim() + " - " + current.getClassification().trim());
-            viewHolder.address.setText(current.getAddress1().trim());
+//            viewHolder.text_store_id.setText("Store Id - " + current.getStoreId().toString() + " (Category - " + current.getStoreCategory().trim() + ")");
+//            viewHolder.storelist_storename.setText(current.getStoreName().trim() + " - " + current.getClassification().trim());
+//            viewHolder.address.setText(current.getAddress1().trim());
 
             if (current.getGeoTag().equalsIgnoreCase("Y")) {
                 viewHolder.imageview.setVisibility(View.VISIBLE);

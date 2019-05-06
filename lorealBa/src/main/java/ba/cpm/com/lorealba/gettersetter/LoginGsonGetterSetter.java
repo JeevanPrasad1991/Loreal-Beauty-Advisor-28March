@@ -36,4 +36,12 @@ public class LoginGsonGetterSetter {
     }
 
 
+    @SerializedName("Attendance_Status")
+    @Expose
+    private List<AttendanceStatus> attendanceStatus = null;
+
+    public List<AttendanceStatus> getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
 }

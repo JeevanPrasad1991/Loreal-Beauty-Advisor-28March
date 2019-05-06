@@ -111,36 +111,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/custom_layout_margin_50"
+                android:layout_marginRight="@dimen/custom_layout_margin_50"
                 android:orientation="horizontal"
-                android:visibility="gone"
                 android:weightSum="10">
 
-                <EditText
-                    android:id="@+id/edt_otp"
-                    android:layout_width="0dp"
+                <RadioGroup
+                    android:id="@+id/radioGrp"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/custom_layout_margin"
-                    android:layout_marginRight="@dimen/custom_layout_margin"
-                    android:layout_weight="6"
-                    android:background="@drawable/rouded_corner_pinki"
-                    android:gravity="center"
-                    android:hint="OTP"
-                    android:inputType="number"
-                    android:maxLength="6"
-                    android:padding="8dp"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_14sp"
-                    android:visibility="invisible" />
-
-                <CheckBox
-                    android:id="@+id/consent_checkbox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="4"
-                    android:checked="false"
-                    android:text="Consent" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    >
+                    <RadioButton
+                        android:id="@+id/radioM"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:checked="true"
+                        android:layout_weight="1"
+                        android:textSize="14dp"
+                        android:text="Male"
+                        />
+                    <RadioButton
+                        android:id="@+id/radioF"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:checked="false"
+                        android:layout_weight="1"
+                        android:textSize="14dp"
+                        android:text="Female"
+                        />
+                </RadioGroup>
             </LinearLayout>
 
         </LinearLayout>

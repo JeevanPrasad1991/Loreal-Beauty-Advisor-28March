@@ -8,8 +8,8 @@
     android:orientation="vertical"
     android:weightSum="100"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ba.cpm.com.lorealba.dailyentry.PosmTracking"
-    tools:showIn="@layout/activity_posm_tracking">
+    tools:context="ba.cpm.com.lorealba.dailyentry.PromotionActivity"
+    tools:showIn="@layout/activity_promotion_tracking">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/drawer_layout_recycle_store"

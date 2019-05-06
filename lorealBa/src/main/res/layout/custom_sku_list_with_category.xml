@@ -39,138 +39,62 @@
                     android:layout_weight="8"
                     android:gravity="center_vertical"
                     android:padding="10dp"
-                    android:text="Scan Code"
+                    android:text="Sku List Dialog"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_small"
                     android:textStyle="normal" />
 
-
-                <TextView
-                    android:id="@+id/txt_enterbar_code"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="8"
-                    android:gravity="center_vertical"
-                    android:padding="10dp"
-                    android:text="Enter Scan Code"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_small"
-                    android:textStyle="normal"
-                    android:visibility="gone" />
-
-
             </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/text_14sp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="@dimen/text_14sp"
+                android:layout_marginTop="@dimen/store_p_activity_vertical_margin"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/rl_bar_code"
+                <Spinner
+                    android:id="@+id/category_spin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <TextView
-                        android:id="@+id/qrcode_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:gravity="center_vertical"
-                        android:padding="10dp"
-                        android:text=""
-                        android:textColor="@color/grayfor_login"
-                        android:textSize="@dimen/text_size_xsmall"
-                        android:textStyle="normal" />
-
-                    <ImageView
-                        android:id="@+id/img_bar_code"
-                        android:layout_width="36px"
-                        android:layout_height="36px"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="03dp"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:src="@drawable/bar_code"
-                        android:textStyle="normal" />
-                </LinearLayout>
+                    android:layout_marginLeft="@dimen/text_14sp"
+                    android:layout_marginRight="@dimen/text_14sp" />
 
             </LinearLayout>
 
-
             <LinearLayout
-                android:id="@+id/RL_scan_code"
+                android:id="@+id/rl_brand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/text_14sp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="@dimen/text_14sp"
+                android:layout_margin="5dp"
+                android:visibility="gone"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
-                <TextView
-                    android:layout_width="0dp"
+                <Spinner
+                    android:id="@+id/brand_spin"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="5.5"
-                    android:gravity="center_vertical"
-                    android:padding="10dp"
-                    android:text="Enter Bar Code"
-                    android:textColor="@color/grayfor_login"
-                    android:textSize="@dimen/text_size_xsmall"
-                    android:textStyle="normal"
-                    android:visibility="gone" />
-
-                <EditText
-                    android:id="@+id/edt_scan_code"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/text_25dp"
-                    android:layout_marginRight="@dimen/text_25dp"
-                    android:layout_weight="7"
-                    android:background="@drawable/rouded_corner_pinki"
-                    android:gravity="center_vertical"
-                    android:hint="Enter Bar Code"
-                    android:inputType="number"
-                    android:maxLength="20"
-                    android:padding="08dp"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_xsmall"
-                    android:textStyle="normal" />
-
-                <Button
-                    android:id="@+id/check_exist_sku"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="3"
-                    android:text="Get"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black" />
+                    android:layout_marginLeft="@dimen/text_14sp"
+                    android:layout_marginRight="@dimen/text_14sp" />
             </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/sku_name"
+            <LinearLayout
+                android:id="@+id/rl_sku"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/text22dp"
-                android:layout_marginTop="2dp"
+                android:layout_margin="5dp"
                 android:visibility="gone"
-                android:layout_marginRight="@dimen/text22dp"
-                android:layout_marginBottom="2dp"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:text=""
-                android:textColor="@color/grayfor_login"
-                android:textSize="@dimen/text_size_xsmall"
-                android:textStyle="normal" />
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <Spinner
+                    android:id="@+id/sku_spin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/text_14sp"
+                    android:layout_marginRight="@dimen/text_14sp" />
+            </LinearLayout>
 
 
             <LinearLayout
@@ -179,6 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_14sp"
                 android:layout_marginTop="5dp"
+                android:visibility="gone"
                 android:layout_marginRight="@dimen/text_14sp"
                 android:orientation="horizontal"
                 android:weightSum="10">
@@ -259,7 +184,6 @@
                     android:layout_weight="5"
                     android:src="@drawable/add_btn" />
             </LinearLayout>
-
 
         </LinearLayout>
 

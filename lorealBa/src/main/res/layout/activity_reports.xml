@@ -49,6 +49,7 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <include layout="@layout/content_reports" />
+    <!--<include layout="@layout/content_reports" />-->
+    <include layout="@layout/content_reports_lavelwise" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -6,15 +6,16 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:weightSum="10"
+    android:weightSum="100"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ba.cpm.com.lorealba.dailyentry.InvoiceReportProformaActivity"
     tools:showIn="@layout/activity_invoice_report_proforma">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="2dp"
+        android:layout_weight="40"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="6dp"
         app:cardElevation="1dp">
@@ -24,24 +25,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <TextView
+                android:id="@+id/invoice_storename"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:padding="13dp"
+                android:padding="6dp"
                 android:text="A One Beauty Store\n147,Kalkaji,New Delhi-29"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text22dp"
+                android:textSize="@dimen/text_size_medium"
                 android:textStyle="normal" />
 
             <TextView
+                android:id="@+id/invoice_gst_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
-                android:padding="8dp"
+                android:padding="6dp"
                 android:text="GSTN : \nDate : 04 March 2019"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_xsmall"
@@ -56,10 +58,10 @@
                 android:id="@+id/text_cus_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="6dp"
                 android:text="Customer Name : Suresh"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_size_medium"
+                android:textSize="@dimen/store_entry_text_size"
                 android:textStyle="normal" />
 
             <TextView
@@ -69,7 +71,7 @@
                 android:padding="8dp"
                 android:text="Mobile Number : 9819352389"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_size_medium"
+                android:textSize="@dimen/store_entry_text_size"
                 android:textStyle="normal" />
 
             <LinearLayout
@@ -125,13 +127,123 @@
             </LinearLayout>
 
         </LinearLayout>
-
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/drawer_layout_recycle_store"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp" />
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:layout_weight="37" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="23"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_dark_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="Total (INR) "
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/text_inr_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="330.00"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14sp"
+                android:textStyle="normal" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_dark_background" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="3dp"
+            android:weightSum="10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="8"
+                android:gravity="center_vertical"
+                android:padding="6dp"
+                android:text="Confirm Billing at POS"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_14sp"
+                android:textStyle="normal" />
+
+            <Switch
+                android:id="@+id/switch_pos_sale"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="2"
+                android:background="@drawable/rouded_corner_grey"
+                android:checked="false"
+                android:gravity="center_vertical"
+                android:padding="6dp"
+                android:textColor="@color/black"
+                android:textOff="@string/no"
+                android:textOn="@string/yes"
+                android:textSize="@dimen/store_entry_text_size"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+
+        <EditText
+            android:id="@+id/edt_otp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/custom_layout_margin"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="@dimen/custom_layout_margin"
+            android:background="@drawable/rouded_corner_pinki"
+            android:gravity="center"
+            android:hint="OTP"
+            android:inputType="number"
+            android:maxLength="4"
+            android:padding="6dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_14sp" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

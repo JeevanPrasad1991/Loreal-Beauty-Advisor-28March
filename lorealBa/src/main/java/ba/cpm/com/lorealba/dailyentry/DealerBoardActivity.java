@@ -5,12 +5,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,21 +27,24 @@ import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ba.cpm.com.lorealba.Database.Lorealba_Database;
 import ba.cpm.com.lorealba.LorealBaLoginActivty;
-import ba.cpm.com.lorealba.MainMenuActivity;
 import ba.cpm.com.lorealba.R;
+import ba.cpm.com.lorealba.constant.CommonFunctions;
 import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.delegates.NavMenuItemGetterSetter;
 import ba.cpm.com.lorealba.download.DownloadActivity;
+import ba.cpm.com.lorealba.upload.PreviousDataUploadActivity;
 
 public class DealerBoardActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView recycle_recce, stock_recycle, recycler_self;
     ValueAdapter adapter, stock_adapter, posm_adapter;
-    ImageView btn_offerat_mystore,take_backup;
+    SharedPreferences preferences;
+    ImageView btn_offerat_mystore, take_backup;
+    Lorealba_Database db;
+    String date, userId;
     Context context;
 
     @Override
@@ -49,12 +53,20 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_dealer_board);
         context = this;
+        db = new Lorealba_Database(context);
+        db.open();
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        date = preferences.getString(CommonString.KEY_DATE, null);
+        userId = preferences.getString(CommonString.KEY_USERNAME, null);
+
         recycle_recce = (RecyclerView) findViewById(R.id.recycle_recce);
         stock_recycle = (RecyclerView) findViewById(R.id.stock_recycle);
         recycler_self = (RecyclerView) findViewById(R.id.recycler_self);
 
         btn_offerat_mystore = (ImageView) findViewById(R.id.btn_offerat_mystore);
         take_backup = (ImageView) findViewById(R.id.take_backup);
+        take_backup.setOnClickListener(this);
         adapter = new ValueAdapter(getApplicationContext(), getdata());
         recycle_recce.setAdapter(adapter);
         recycle_recce.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -81,7 +93,7 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.take_backup:
                 take_backup();
                 break;
@@ -113,17 +125,78 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
                 @Override
                 public void onClick(View v) {
                     if (current.getIconImg() == R.drawable.data_sink) {
-                        startActivity(new Intent(context, DownloadActivity.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (CommonFunctions.CheckNetAvailability(context)) {
+                            if (!db.isCoverageDataFilled(date)) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.parinaam);
+                                builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)
+                                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                try {
+                                                    db.open();
+                                                    db.deletePreviousUploadedData(date);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                Intent in = new Intent(getApplicationContext(), DownloadActivity.class);
+                                                startActivity(in);
+                                                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+
+                                            }
+                                        })
+                                        .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        });
+
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle(R.string.parinaam);
+                                builder.setMessage(getResources().getString(R.string.previous_data_upload)).setCancelable(false)
+                                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                Intent in = new Intent(getApplicationContext(), PreviousDataUploadActivity.class);
+                                                startActivity(in);
+                                                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            }
+                        } else {
+                            Snackbar.make(holder.icon, getResources().getString(R.string.nonetwork), Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
                     } else if (current.getIconImg() == R.drawable.attendance) {
-                        startActivity(new Intent(context, AttendanceActivity.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    } else if (current.getIconImg() == R.drawable.store_work) {
-                        startActivity(new Intent(context, StoreListActivity.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (db.getStoreData(date).size() > 0) {
+                            if (preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "") != null && !preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equals("")) {
+                                Snackbar.make(holder.icon, getString(R.string.present), Snackbar.LENGTH_LONG).show();
+                                startActivity(new Intent(context, StoreListActivity.class));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            } else {
+                                startActivity(new Intent(context, AttendanceActivity.class));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                        } else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
                     } else if (current.getIconImg() == R.drawable.reports) {
-                        startActivity(new Intent(context, ReportsActivity.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (db.getStoreData(date).size() > 0) {
+                            if (preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "") == null) {
+                                Snackbar.make(holder.icon, "Mark your attendace first", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                            } else if (preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "") != null && !preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equals("") && preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equalsIgnoreCase("Present")) {
+                                startActivity(new Intent(context, ReportsActivity.class));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                        } else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
                     } else if (current.getIconImg() == R.drawable.daily_sale) {
                         startActivity(new Intent(context, MyLibraryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -139,26 +212,54 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
                     } else if (current.getIconImg() == R.drawable.inward_stock) {
                         startActivity(new Intent(context, StockEntryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "3"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
                     } else if (current.getIconImg() == R.drawable.customer_wise_sales) {
-                        startActivity(new Intent(context, SaleTrackingActivity.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (db.getStoreData(date).size() > 0) {
+                            if (preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "") == null || preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equals("")) {
+                              //  Snackbar.make(holder.icon, "Mark your attendance first", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                            } else if (preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "") != null && !preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equals("") && preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equalsIgnoreCase("Present")) {
+                                startActivity(new Intent(context, SaleTrackingActivity.class));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                        } else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
                     } else if (current.getIconImg() == R.drawable.posm_tracking) {
+                        if (db.getStoreData(date).size() > 0) {
+                            Snackbar.make(holder.icon, "Posm Master Data Not Found.", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
 
-                        startActivity(new Intent(context, PosmTracking.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            // startActivity(new Intent(context, PromotionActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
+                            // overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        } else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
                     } else if (current.getIconImg() == R.drawable.promotion_tracking) {
-                        startActivity(new Intent(context, PosmTracking.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    } else if (current.getIconImg() == R.drawable.sample_stock) {
+                        if (db.getStoreData(date).size() > 0) {
+                            if (preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "") == null) {
+                                Snackbar.make(holder.icon, "Mark your attendace first", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                            } else if (preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "") != null && !preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equals("") && preferences.getString(CommonString.KEY_ATTENDENCE_STATUS, "").equalsIgnoreCase("Present")) {
+                                startActivity(new Intent(context, PromotionActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                        } else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
 
+                    } else if (current.getIconImg() == R.drawable.sample_stock) {
                         startActivity(new Intent(context, SampleTesterStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.tester_stock) {
                         startActivity(new Intent(context, SampleTesterStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.notifications) {
-                        startActivity(new Intent(context, NotificationsActivity.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (db.getStoreData(date).size() > 0) {
+                            startActivity(new Intent(context, NotificationsActivity.class));
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        } else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
                     }
                 }
             });
@@ -184,7 +285,7 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
 
     public List<NavMenuItemGetterSetter> getdata() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int attendance = 0, knowledge, performance, reports, notification, data_sink;
+        int attendance = 0, knowledge, performance, reports, notification, data_sink, store_work;
         attendance = R.drawable.attendance;
         notification = R.drawable.notifications;
         knowledge = R.drawable.knowledge;
@@ -192,6 +293,7 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
         performance = R.drawable.performance;
         reports = R.drawable.reports;
         data_sink = R.drawable.data_sink;
+        store_work = R.drawable.store_work;
 
         int img[] = {data_sink, attendance, notification, reports, knowledge};
         for (int i = 0; i < img.length; i++) {
@@ -248,7 +350,7 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("Alert").setMessage("Do you want to Exit ?");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("Parinaam").setMessage("Do you want to Exit ?");
         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -267,7 +369,7 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
         builder.show();
     }
 
-    private void take_backup(){
+    private void take_backup() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context).setTitle("Parinaam");
         builder1.setMessage("Are you sure you want to take the backup of your data ?").setCancelable(false).setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {

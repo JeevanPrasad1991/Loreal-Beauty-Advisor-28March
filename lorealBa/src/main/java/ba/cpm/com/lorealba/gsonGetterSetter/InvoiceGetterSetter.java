@@ -5,15 +5,24 @@ import java.io.Serializable;
 public class InvoiceGetterSetter implements Serializable {
     String product;
 
-    public String getScan_code_or_enterd_code() {
-        return scan_code_or_enterd_code;
+    public boolean isPos_sale_flag() {
+        return pos_sale_flag;
     }
 
-    public void setScan_code_or_enterd_code(String scan_code_or_enterd_code) {
-        this.scan_code_or_enterd_code = scan_code_or_enterd_code;
+    public void setPos_sale_flag(boolean pos_sale_flag) {
+        this.pos_sale_flag = pos_sale_flag;
     }
 
-    String scan_code_or_enterd_code;
+    boolean pos_sale_flag=false;
+    public String getScan_ean_code_or_enterd_ean_code() {
+        return scan_ean_code_or_enterd_ean_code;
+    }
+
+    public void setScan_ean_code_or_enterd_ean_code(String scan_ean_code_or_enterd_ean_code) {
+        this.scan_ean_code_or_enterd_ean_code = scan_ean_code_or_enterd_ean_code;
+    }
+
+    String scan_ean_code_or_enterd_ean_code;
 
     public String getProduct() {
         return product;
@@ -39,12 +48,12 @@ public class InvoiceGetterSetter implements Serializable {
         this.quantity = quantity;
     }
 
-    public String getAmount() {
-        return amount;
+    public String getProduct_rate() {
+        return product_rate;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public void setProduct_rate(String product_rate) {
+        this.product_rate = product_rate;
     }
 
     public String getTotal_amount() {
@@ -73,8 +82,37 @@ public class InvoiceGetterSetter implements Serializable {
 
     String product_Id;
     String quantity;
-    String amount;
+    String product_rate;
     String total_amount;
     String customer_name;
     String mobile_no;
+    String store_name;
+
+    public String getCustomer_gender() {
+        return customer_gender;
+    }
+
+    public void setCustomer_gender(String customer_gender) {
+        this.customer_gender = customer_gender;
+    }
+
+    String customer_gender;
+
+    public String getStore_name() {
+        return store_name;
+    }
+
+    public void setStore_name(String store_name) {
+        this.store_name = store_name;
+    }
+
+    public String getStore_address() {
+        return store_address;
+    }
+
+    public void setStore_address(String store_address) {
+        this.store_address = store_address;
+    }
+
+    String store_address;
 }

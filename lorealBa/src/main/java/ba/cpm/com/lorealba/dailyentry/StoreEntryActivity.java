@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,7 +24,6 @@ import ba.cpm.com.lorealba.Database.Lorealba_Database;
 import ba.cpm.com.lorealba.R;
 import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.delegates.NavMenuItemGetterSetter;
-import ba.cpm.com.lorealba.gsonGetterSetter.JourneyPlan;
 
 public class StoreEntryActivity extends AppCompatActivity {
     Lorealba_Database db;
@@ -130,10 +128,10 @@ public class StoreEntryActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.posm_tracking) {
 
-                        startActivity(new Intent(context, PosmTracking.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
+                        startActivity(new Intent(context, PromotionActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.promotion_tracking) {
-                        startActivity(new Intent(context, PosmTracking.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
+                        startActivity(new Intent(context, PromotionActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.sample_stock) {
 

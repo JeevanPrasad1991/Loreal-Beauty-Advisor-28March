@@ -216,7 +216,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".dailyentry.PosmTracking"
+            android:name=".dailyentry.PromotionActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"

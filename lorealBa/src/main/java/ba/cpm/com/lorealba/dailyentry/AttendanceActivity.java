@@ -3,6 +3,7 @@ package ba.cpm.com.lorealba.dailyentry;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,38 +13,44 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.zxing.integration.android.IntentIntegrator;
+import com.crashlytics.android.Crashlytics;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import ba.cpm.com.lorealba.Database.Lorealba_Database;
 import ba.cpm.com.lorealba.R;
+import ba.cpm.com.lorealba.constant.AlertandMessages;
 import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.gsonGetterSetter.AttendanceGetterSetter;
-import ba.cpm.com.lorealba.gsonGetterSetter.InvoiceGetterSetter;
+import ba.cpm.com.lorealba.retrofit.PostApi;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AttendanceActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView btn_present, btn_leave, btn_weekoff, btn_meeting, btn_training;
@@ -59,13 +66,17 @@ public class AttendanceActivity extends AppCompatActivity implements View.OnClic
     public ArrayList<AttendanceGetterSetter> selected_list = new ArrayList<>();
     FloatingActionButton fab;
     AttendanceGetterSetter object = null;
+    Lorealba_Database database;
     ImageView img_home;
+    ProgressDialog loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance);
         context = this;
+        database = new Lorealba_Database(context);
+        database.open();
         iduserinterface();
     }
 
@@ -129,24 +140,22 @@ public class AttendanceActivity extends AppCompatActivity implements View.OnClic
 
             case R.id.fab:
                 if (!selectedtext_attendee.getText().toString().isEmpty()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
-                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.parinaam).setMessage(R.string.alertsaveData).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            if (selectedtext_attendee.getText().toString().equalsIgnoreCase("Leave") ||
-                                    selectedtext_attendee.getText().toString().equalsIgnoreCase("Weekoff")) {
-                                startActivity(new Intent(context, DealerBoardActivity.class));
-                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                                AttendanceActivity.this.finish();
-                            } else {
-                                startActivity(new Intent(context, StoreListActivity.class));
-                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                                AttendanceActivity.this.finish();
+                            try {
+                                JSONObject jsonObject = null;
+                                //region Coverage Data
+                                jsonObject = new JSONObject();
+                                jsonObject.put("UserId", username);
+                                jsonObject.put("Reason_Id", selectedtext_attendee.getText().toString());
+                                jsonObject.put("Att_Date", visit_date);
+                                jsonObject.put("Image_Url", "");
+                                uploadattendancedata(jsonObject.toString(), context, username, visit_date, "", selectedtext_attendee.getText().toString());
+                                dialogInterface.dismiss();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            editor.putString(CommonString.KEY_ATTENDANCE, selectedtext_attendee.getText().toString());
-                            editor.apply();
                         }
                     });
                     builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -283,18 +292,40 @@ public class AttendanceActivity extends AppCompatActivity implements View.OnClic
         lp.gravity = Gravity.CENTER;
         multiPurposeDialog.getWindow().setAttributes(lp);
         multiPurposeDialog.setCancelable(true);
-
         Button ob_btn = (Button) multiPurposeDialog.findViewById(R.id.ob_btn);
-
         ob_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                multiPurposeDialog.dismiss();
-                editor.putString(CommonString.KEY_ATTENDANCE, selectedtext_attendee.getText().toString());
-                editor.apply();
-                startActivity(new Intent(context, DealerBoardActivity.class));
-                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                AttendanceActivity.this.finish();
+                if (!selectedtext_attendee.getText().toString().isEmpty()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context).setTitle(R.string.parinaam).setMessage(R.string.alertsaveData).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            try {
+                                JSONObject jsonObject = null;
+                                //region Coverage Data
+                                jsonObject = new JSONObject();
+                                jsonObject.put("UserId", username);
+                                jsonObject.put("Reason_Id", selectedtext_attendee.getText().toString());
+                                jsonObject.put("Att_Date", visit_date);
+                                jsonObject.put("Image_Url", "");
+                                uploadattendancedata(jsonObject.toString(), context, username, visit_date, "", selectedtext_attendee.getText().toString());
+                                dialogInterface.dismiss();
+                                multiPurposeDialog.dismiss();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    Snackbar.make(fab, "Please select user attendance.", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -315,5 +346,91 @@ public class AttendanceActivity extends AppCompatActivity implements View.OnClic
             layout.setOrientation(LinearLayout.VERTICAL);
         }
     }
+
+    public void uploadattendancedata(String jsondata, final Context context, final String _user_Id, final String visit_date, final String att_image, final String reason) {
+        try {
+            loading = ProgressDialog.show(context, "Processing", "Please wait...", false, false);
+            final OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS).connectTimeout(20, TimeUnit.SECONDS).build();
+            RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsondata.toString());
+            Retrofit adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create()).build();
+            PostApi api = adapter.create(PostApi.class);
+            retrofit2.Call<ResponseBody> call = api.getAttendanceDetails(jsonData);
+            call.enqueue(new retrofit2.Callback<ResponseBody>() {
+                @Override
+                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    ResponseBody responseBody = response.body();
+                    String data = null;
+                    if (responseBody != null && response.isSuccessful()) {
+                        try {
+                            data = response.body().string();
+                            if (data.contains("1")) {
+                                if (selectedtext_attendee.getText().toString().equalsIgnoreCase("Present")) {
+                                    editor.putString(CommonString.KEY_ATTENDENCE_STATUS, reason);
+                                    editor.apply();
+                                    database.open();
+                                    database.insertAttendenceData(_user_Id, visit_date, att_image, reason);
+                                    Intent intent = new Intent(context, StoreListActivity.class);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                                    AttendanceActivity.this.finish();
+                                    loading.dismiss();
+                                } else {
+                                    editor.putString(CommonString.KEY_ATTENDENCE_STATUS, reason);
+                                    editor.apply();
+                                    Intent intent = new Intent(context, DealerBoardActivity.class);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                                    AttendanceActivity.this.finish();
+                                }
+                            } else {
+                                if (data.contains("0")) {
+                                    editor.putString(CommonString.KEY_ATTENDENCE_STATUS, reason);
+                                    editor.apply();
+                                    database.open();
+                                    database.insertAttendenceData(_user_Id, visit_date, att_image, reason);
+                                    Intent intent = new Intent(context, DealerBoardActivity.class);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                                    AttendanceActivity.this.finish();
+                                    loading.dismiss();
+                                } else {
+                                    throw new java.lang.Exception();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Crashlytics.logException(e);
+                            e.printStackTrace();
+                            loading.dismiss();
+                            editor.putString(CommonString.KEY_ATTENDENCE_STATUS, "0");
+                            editor.apply();
+                            AlertandMessages.showAlertlogin((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + e.toString() + ")");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                    loading.dismiss();
+                    editor.putString(CommonString.KEY_ATTENDENCE_STATUS, "0");
+                    editor.apply();
+                    if (t != null) {
+                        if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
+                            AlertandMessages.showAlertlogin((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + t.toString() + ")");
+                        }
+                    } else {
+                        AlertandMessages.showAlertlogin((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            loading.dismiss();
+            editor.putString(CommonString.KEY_ATTENDENCE_STATUS, "0");
+            editor.apply();
+            AlertandMessages.showAlertlogin((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + e.toString() + ")");
+        }
+    }
+
 
 }

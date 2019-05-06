@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    tools:context="ba.cpm.com.lorealba.dailyentry.PosmTracking">
+    tools:context="ba.cpm.com.lorealba.dailyentry.PromotionActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

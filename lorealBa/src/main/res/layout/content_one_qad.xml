@@ -13,17 +13,20 @@
     tools:showIn="@layout/activity_one_qad">
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rel_qad"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/text_size_13sp">
+        android:layout_marginTop="@dimen/text_size_13sp"
+        android:orientation="vertical"
+        android:weightSum="100">
 
         <android.support.v7.widget.CardView
             android:id="@+id/card_quiz"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="60"
             android:gravity="center"
             app:cardBackgroundColor="@color/white">
 
@@ -96,8 +99,9 @@
         <RelativeLayout
             android:id="@+id/rel_layout_progress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/card_quiz">
+            android:layout_height="0dp"
+            android:layout_below="@+id/card_quiz"
+            android:layout_weight="40">
 
             <ba.cpm.com.lorealba.progressbar.CircularProgressBar
                 android:id="@+id/circularprogressbar1"
@@ -127,6 +131,7 @@
             android:layout_height="120dip"
             android:layout_below="@+id/card_quiz"
             android:layout_marginTop="10dip"
+            android:layout_weight="40"
             android:visibility="gone">
 
             <TextView
@@ -140,7 +145,7 @@
 
         </RelativeLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

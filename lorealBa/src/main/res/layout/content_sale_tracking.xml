@@ -91,74 +91,18 @@
 
         </android.support.v7.widget.CardView>
 
-
-        <android.support.v7.widget.CardView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/sale_tracking_recycle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="@dimen/size_18dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/text_25dp"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="10"
-                        android:padding="10dp"
-                        android:text="Deepika S - 9888888880"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_14sp"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:padding="10dp"
-                        android:text="Count : 2"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_14sp"
-                        android:textStyle="normal" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="6"
-                        android:padding="10dp"
-                        android:text="Amount : Rs 665.00"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_14sp"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+            android:layout_margin="5dp"/>
 
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:visibility="gone"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/size_18dp"
             app:cardElevation="2dp">

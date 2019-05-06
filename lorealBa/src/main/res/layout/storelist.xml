@@ -33,17 +33,21 @@
                 android:weightSum="10">
 
                 <TextView
+                    android:id="@+id/store_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:padding="4dp"
                     android:text="A One Beauty Store "
                     android:textColor="@color/grey_dark_background"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/store_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:padding="4dp"
                     android:text="47,North Avenue Road,Kalkaji,New Delhi"
                     android:textColor="@color/grey_dark_background"
                     android:textSize="14sp"
@@ -56,23 +60,26 @@
                     android:background="@color/colorPrimaryDark" />
 
                 <TextView
+                    android:id="@+id/contact_person"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:padding="4dp"
                     android:text="Store Contact Person : Ms Ritu Beri"
                     android:textColor="@color/grey_dark_background"
                     android:textSize="14sp"
                     android:textStyle="normal" />
 
                 <TextView
+                    android:id="@+id/store_contact_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:padding="4dp"
                     android:text="Store Contact Number :9871452790"
                     android:textColor="@color/grey_dark_background"
                     android:textSize="14sp"
                     android:textStyle="normal" />
-
 
                 <View
                     android:layout_width="match_parent"
@@ -81,9 +88,11 @@
                     android:background="@color/colorPrimaryDark" />
 
                 <TextView
+                    android:id="@+id/channel_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:padding="4dp"
                     android:text="Channel : GT"
                     android:textColor="@color/grey_dark_background"
                     android:textSize="14sp"
@@ -98,7 +107,8 @@
                     android:weightSum="10">
 
                     <Button
-                        android:layout_width="0dp"
+                        android:id="@+id/btn_kyc"
+                        android:layout_width="@dimen/custom_layout_margin_50"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="15dp"
@@ -110,7 +120,6 @@
                         android:textSize="@dimen/text_14sp" />
 
                     <ImageView
-
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="3"
@@ -123,6 +132,33 @@
                         android:layout_height="40dp"
                         android:layout_weight="3"
                         android:src="@drawable/baseline_directions_black_48" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/rl_checkin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:padding="6dp"
+                        android:visibility="invisible" />
+
+                    <ImageView
+                        android:id="@+id/img_check_in"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/custom_layout_margin_50"
+                        android:layout_weight="5"
+                        android:src="@drawable/check_in_btn"
+                        android:visibility="visible" />
+
                 </LinearLayout>
 
             </LinearLayout>

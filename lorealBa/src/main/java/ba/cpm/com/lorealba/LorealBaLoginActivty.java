@@ -160,7 +160,7 @@ public class LorealBaLoginActivty extends AppCompatActivity {
             loading = ProgressDialog.show(LorealBaLoginActivty.this, "Processing", "Please wait...", false, false);
             versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("Userid", userid);
+            jsonObject.put("UserName", userid);
             jsonObject.put("Password", password);
             jsonObject.put("Intime", getCurrentTime());
             jsonObject.put("Latitude", lat);
@@ -212,40 +212,97 @@ public class LorealBaLoginActivty extends AppCompatActivity {
                                     loading.dismiss();
                                 } else {
                                     Gson gson = new Gson();
-                                    LoginGsonGetterSetter userObject = gson.fromJson(data, LoginGsonGetterSetter.class);
-                                    // PUT IN PREFERENCES
-                                    Crashlytics.setUserIdentifier(userid);
-                                    editor.putString(CommonString.KEY_USERNAME, userid);
-                                    editor.putString(CommonString.KEY_PASSWORD, password);
-                                    editor.putString(CommonString.KEY_VERSION, String.valueOf(userObject.getResult().get(0).getAppVersion()));
-                                    editor.putString(CommonString.KEY_PATH, userObject.getResult().get(0).getAppPath());
-                                    editor.putString(CommonString.KEY_DATE, userObject.getResult().get(0).getCurrentdate());
-                                    Date initDate = new SimpleDateFormat("MM/dd/yyyy").parse(userObject.getResult().get(0).getCurrentdate());
-                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-                                    String parsedDate = formatter.format(initDate);
-                                    editor.putString(CommonString.KEY_USER_TYPE, userObject.getResult().get(0).getRightname());
-                                    editor.putString(CommonString.KEY_YYYYMMDD_DATE, parsedDate);
-                                    editor.putString(CommonString.KEY_NOTICE_BOARD_LINK, userObject.getResult().get(0).getNotice_board());
-                                    editor.commit();
-                                    if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
-                                        //startActivity(new Intent(context, OneQADActivity.class));
-                                        startActivity(new Intent(context, DealerBoardActivity.class));
-                                        LorealBaLoginActivty.this.finish();
-                                    } else {
-                                        Intent intent = new Intent(getBaseContext(), AutoUpdateActivity.class);
-                                        intent.putExtra(CommonString.KEY_PATH, preferences.getString(CommonString.KEY_PATH, ""));
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                    loading.dismiss();
+                                    final LoginGsonGetterSetter userObject = gson.fromJson(data, LoginGsonGetterSetter.class);
+
+                                    //Download Todays Questions
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("Username", userid);
+                                    jsonObject.put("Downloadtype", "Attendance_Status");
+                                    String jsonString = jsonObject.toString();
+                                    RequestBody questionjsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
+                                    adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient).addConverterFactory(GsonConverterFactory.create()).build();
+                                    PostApi api1 = adapter.create(PostApi.class);
+                                    Call<ResponseBody> callquest = api1.getDownloadAllUSINGLOGIN(questionjsonData);
+                                    callquest.enqueue(new Callback<ResponseBody>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                            ResponseBody responseBodyforatt = response.body();
+                                            String dataforatt = null;
+                                            if (responseBodyforatt != null && response.isSuccessful()) {
+
+                                                try {
+                                                    dataforatt = response.body().string();
+                                                    dataforatt = dataforatt.substring(1, dataforatt.length() - 1).replace("\\", "");
+                                                    if (dataforatt.equalsIgnoreCase(CommonString.MESSAGE_SOCKETEXCEPTION)) {
+                                                        loading.dismiss();
+                                                        AlertandMessages.showAlertlogin((Activity) context, "Check Your Internet Connection");
+                                                    } else {
+                                                        LoginGsonGetterSetter attendancestatus = null;
+                                                        Gson gson = new Gson();
+                                                        if (!dataforatt.contains("No Data")) {
+                                                            attendancestatus = gson.fromJson(dataforatt, LoginGsonGetterSetter.class);
+                                                            if (attendancestatus != null) {
+                                                                editor.putString(CommonString.KEY_ATTENDENCE_STATUS, attendancestatus.getAttendanceStatus().get(0).getStatus());
+                                                            }
+                                                            // PUT IN PREFERENCES
+                                                        }else {
+                                                            editor.putString(CommonString.KEY_ATTENDENCE_STATUS, "");
+                                                        }
+
+                                                        Crashlytics.setUserIdentifier(userid);
+                                                        editor.putString(CommonString.KEY_USERNAME, userid);
+                                                        editor.putString(CommonString.KEY_PASSWORD, password);
+                                                        editor.putString(CommonString.KEY_VERSION, String.valueOf(userObject.getResult().get(0).getAppVersion()));
+                                                        editor.putString(CommonString.KEY_PATH, userObject.getResult().get(0).getAppPath());
+                                                        editor.putString(CommonString.KEY_DATE, userObject.getResult().get(0).getCurrentdate());
+                                                        Date initDate = new SimpleDateFormat("MM/dd/yyyy").parse(userObject.getResult().get(0).getCurrentdate());
+                                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+                                                        String parsedDate = formatter.format(initDate);
+                                                        editor.putString(CommonString.KEY_USER_TYPE, userObject.getResult().get(0).getRightname());
+                                                        editor.putString(CommonString.KEY_YYYYMMDD_DATE, parsedDate);
+                                                        editor.putString(CommonString.KEY_NOTICE_BOARD_LINK, userObject.getResult().get(0).getNotice_board());
+                                                        editor.commit();
+                                                        if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
+                                                             startActivity(new Intent(context, OneQADActivity.class));
+                                                           // startActivity(new Intent(context, DealerBoardActivity.class));
+                                                            LorealBaLoginActivty.this.finish();
+                                                        } else {
+                                                            Intent intent = new Intent(getBaseContext(), AutoUpdateActivity.class);
+                                                            intent.putExtra(CommonString.KEY_PATH, preferences.getString(CommonString.KEY_PATH, ""));
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                        loading.dismiss();
+
+                                                    }
+                                                } catch (Exception e) {
+                                                    Crashlytics.logException(e);
+                                                    loading.dismiss();
+                                                    e.printStackTrace();
+                                                    if (e != null) {
+                                                        AlertandMessages.showAlertlogin(LorealBaLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION + "(" + e.toString() + ")");
+                                                    } else {
+                                                        AlertandMessages.showAlertlogin(LorealBaLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION);
+
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                        }
+                                    });
+
                                 }
 
                             } catch (Exception e) {
                                 loading.dismiss();
                                 e.printStackTrace();
                                 AlertandMessages.showAlertlogin(LorealBaLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION + "(" + e.toString() + ")");
-
-
                             }
                         }
                     }
@@ -323,7 +380,6 @@ public class LorealBaLoginActivty extends AppCompatActivity {
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
-
     }
 
 

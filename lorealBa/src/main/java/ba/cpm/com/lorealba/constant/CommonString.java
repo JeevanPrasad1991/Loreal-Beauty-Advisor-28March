@@ -20,8 +20,8 @@ public class CommonString {
     public static final String KEY_STOCK_TYPE = "STOCK_TYPE";
     public static final String KEY_YYYYMMDD_DATE = "yyyymmddDate";
     public static final String KEY_STOREVISITED_STATUS = "STOREVISITED_STATUS";
-    public static String URL = "http://lorealba.parinaam.in/webservice/LorealBAwebservice.svc/";
-    public static String URLGORIMAG = "http://lorealba.parinaam.in/webservice/Imageupload.asmx/";
+    public static String URL = "http://lba.parinaam.in/webservice/Loginservice.svc/";
+    public static String URLGORIMAG = "http://lba.parinaam.in/webservice/Imageupload.asmx/";
     public static final int CAPTURE_MEDIA = 131;
     public static final String KEY_PATH = "PATH";
     public static final String KEY_VERSION = "APP_VERSION";
@@ -44,7 +44,7 @@ public class CommonString {
     public static final String KEY_CHECK_IN = "I";
     ///all service key
 
-    public static final String KEY_LOGIN_DETAILS = "LoginDetaillatest";
+    public static final String KEY_LOGIN_DETAILS = "Login";
     public static final String KEY_DOWNLOAD_INDEX = "download_Index";
     public static final int TAG_FROM_CURRENT = 1;
     public static final int DOWNLOAD_ALL_SERVICE = 2;
@@ -52,6 +52,7 @@ public class CommonString {
     public static final int UPLOADJsonDetail = 5;
     //File Path
     public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/Lorealba_backup/";
+    public static final String Promotion_ReF_File_Path = Environment.getExternalStorageDirectory() + "/LorealBaPromoImages/";
     ////for insert data key
     public static final String FILE_PATH = Environment.getExternalStorageDirectory() + "/.Lorealba_Images/";
     public static final String ONBACK_ALERT_MESSAGE = "Unsaved data will be lost - Do you want to continue?";
@@ -62,6 +63,7 @@ public class CommonString {
     public static final String DATA_DELETE_ALERT_MESSAGE = "Saved data will be lost - Do you want to continue?";
     public static final String KEY_CHECKOUT_IMAGE = "CHECKOUT_IMAGE";
     public static final String KEY_STORE_NAME = "STORE_NAME";
+    public static final String KEY_STORE_ADDRESS = "STORE_ADDEESS";
     public static final String KEY_STORE_ID = "STORE_ID";
     public static final String KEY_VISIT_DATE = "VISIT_DATE";
     public static final String KEY_LATITUDE = "LATITUDE";
@@ -119,6 +121,8 @@ public class CommonString {
 
     public static final String TAG_FROM_NONWORKING = "from_NonWorking";
     public static final String TAG_OBJECT = "OBJECT";
+    public static final String TAG_OTP = "OTP";
+    public static final String Total_Amount = "Total_Amount";
     public static final String TABLE_STORE_GEOTAGGING = "STORE_GEOTAGGING";
     public static final String CREATE_TABLE_STORE_GEOTAGGING = "CREATE TABLE IF NOT EXISTS "
             + TABLE_STORE_GEOTAGGING
@@ -134,10 +138,65 @@ public class CommonString {
 
     public static final String MESSAGE_NO_JCP = "NO JCP FOR THIS DATE";
 
-    public static final String KEY_ATTENDANCE = "ATTENDANCE";
+    public static final String KEY_ATTENDENCE_STATUS = "ATTENDENCE_STATUS";
     public static final String MESSAGE_CHANGED = "Invalid UserId Or Password / Password Has Been Changed.";
     public static final String MESSAGE_LOGIN_NO_DATA = "Data mapping error.";
     public static final String KEY_NOTICE_BOARD_LINK = "NOTICE_BOARD_LINK";
 
+    public static final String Table_Sale_Tracking = "SALE_TRACKING_TABLE";
 
+
+    public static final String Create_Table_Sale_Tracking = "CREATE TABLE  IF NOT EXISTS "
+            + Table_Sale_Tracking + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_ID
+            + " INTEGER, "
+            + KEY_VISIT_DATE + " VARCHAR, USER_ID VARCHAR, "
+            + "STORE_NAME" + " VARCHAR, "
+            + "STORE_ADDRESS" + " VARCHAR, "
+            + "CONTACT_NUMBER" + " VARCHAR, "
+            + "PRODUCT_ID" + " INTEGER, "
+            + "PRODUCT" + " VARCHAR, "
+            + "QUANTITY" + " INTEGER, "
+            + "PRODUCT_RATE" + " INTEGER, "
+            + "TOTAL_AMOUNT" + " INTEGER, "
+            + "BUYER_NAME" + " VARCHAR, "
+            + "POS_SALE_FLAG" + " VARCHAR, "
+            + "GENDER" + " VARCHAR, "
+            + "EAN_CODE" + " VARCHAR)";
+
+    public static final String TABLE_ATTENDENCE_TABLE = "ATTENDENCE_TABLE";
+
+    public static final String CREATE_TABLE_ATTENDENCE_TABLE = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_ATTENDENCE_TABLE
+            + " ("
+            + "KEY_ID"
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_USER_ID
+            + " VARCHAR,"
+            + KEY_VISIT_DATE
+            + " VARCHAR,"
+            + KEY_IMAGE
+            + " VARCHAR,"
+            + KEY_REASON + " VARCHAR)";
+
+
+    public static final String Table_promotion = "PROMOTION_TABLE";
+
+    public static final String Create_Table_promotion = "CREATE TABLE  IF NOT EXISTS "
+            + Table_promotion + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER, "
+            + KEY_VISIT_DATE + " VARCHAR, "
+            + "PROMOTION_NAME" + " VARCHAR, "
+            + "PROMOTION_ID" + " INTEGER, "
+            + "PROMOTION_TYPE" + " VARCHAR, "
+            + "PROMOTION_TYPE_ID" + " INTEGER, "
+            + "PRODUCT_CLUSTER" + " VARCHAR, "
+            + "PRODUCT_CLUSTER_ID" + " INTEGER, "
+            + "START_DATE" + " VARCHAR, "
+            + "END_DATE" + " VARCHAR, "
+            + "PROMOTION_EXIST" + " VARCHAR, "
+            + "PROMO_IMG" + " VARCHAR, "
+            + "REASON" + " VARCHAR, "
+            + "REASON_ID" + " INTEGER)";
 }

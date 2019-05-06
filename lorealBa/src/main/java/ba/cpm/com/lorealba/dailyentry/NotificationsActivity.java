@@ -59,7 +59,7 @@ public class NotificationsActivity extends AppCompatActivity {
 
         object = new NotificationsGetterSetter();
         object.setDate("29 March 19");
-        object.setNotifications("Product training on new product is on 20 May at HO.");
+        object.setNotifications("Product training on new sale_trcking_name is on 20 May at HO.");
         object.setSendar("Mukesh");
         offerlist.add(object);
 

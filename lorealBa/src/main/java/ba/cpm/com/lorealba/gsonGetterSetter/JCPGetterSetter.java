@@ -14,9 +14,4 @@ public class JCPGetterSetter {
     public List<JourneyPlan> getJourneyPlan() {
         return journeyPlan;
     }
-
-    public void setJourneyPlan(List<JourneyPlan> journeyPlan) {
-        this.journeyPlan = journeyPlan;
-    }
-
 }

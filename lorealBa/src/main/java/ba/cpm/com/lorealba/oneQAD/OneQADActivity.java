@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -82,7 +83,7 @@ public class OneQADActivity extends AppCompatActivity {
     boolean timeElapseFlag = false;
     ValueAdapter valueAdapter;
     private Retrofit adapter;
-    RelativeLayout rel_qad;
+    LinearLayout rel_qad;
     Context context;
     private SharedPreferences preferences = null;
     private SharedPreferences.Editor editor = null;
@@ -109,7 +110,7 @@ public class OneQADActivity extends AppCompatActivity {
         tv_welldone = (TextView) findViewById(R.id.tv_welldone);
         tv_question = (TextView) findViewById(R.id.tv_question);
         tv_time_Up = (TextView) findViewById(R.id.tv_time_Up);
-        rel_qad = (RelativeLayout) findViewById(R.id.rel_qad);
+        rel_qad = (LinearLayout) findViewById(R.id.rel_qad);
 
         fab = findViewById(R.id.fab);
 
@@ -128,12 +129,13 @@ public class OneQADActivity extends AppCompatActivity {
                 if ((checkNetIsAvailable())) {
                     try {
                         final String[] data_global = {""};
-                        final OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS).connectTimeout(20, TimeUnit.SECONDS).build();
+                        final OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).
+                                writeTimeout(20, TimeUnit.SECONDS).connectTimeout(20, TimeUnit.SECONDS).build();
                         JSONArray answerDetaills = new JSONArray();
                         JSONObject object = new JSONObject();
 
                         //upload answer OneQad
-                        object.put("ANSWER_ID", "0");
+                        object.put("ANSWER_ID", answerData.getAnswer_id());
                         object.put("QUESTION_ID", answerData.getQuestion_id());
                         object.put("VISIT_DATE", answerData.getVisit_date());
                         object.put("USER_NAME", answerData.getUsername());
@@ -188,14 +190,12 @@ public class OneQADActivity extends AppCompatActivity {
                                         }
                                     } else {
                                         dialog.dismiss();
-                                        AlertandMessages.showAlertlogin((Activity) context, "Check Your Internet Connection");
-
+                                        AlertandMessages.showAlertlogin((Activity) context, "Server Not responding .");
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-
                                     if (t instanceof SocketTimeoutException) {
                                         AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
                                     } else {
@@ -352,12 +352,13 @@ public class OneQADActivity extends AppCompatActivity {
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             dialog.setContentView(R.layout.progress_layout);
+            dialog.setCancelable(false);
 
             Window window = dialog.getWindow();
             WindowManager.LayoutParams wlp = window.getAttributes();
 
             wlp.gravity = Gravity.CENTER;
-            //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+
             window.setAttributes(wlp);
             dialog.show();
             final OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS).connectTimeout(20, TimeUnit.SECONDS).build();
@@ -365,7 +366,7 @@ public class OneQADActivity extends AppCompatActivity {
             //Download Todays Questions
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("Username", userId);
-            jsonObject.put("Downloadtype", "Today_Question_Pitch");
+            jsonObject.put("Downloadtype", "Today_Question");
             String jsonString = jsonObject.toString();
             RequestBody questionjsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
             adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient).addConverterFactory(GsonConverterFactory.create()).build();
@@ -392,7 +393,6 @@ public class OneQADActivity extends AppCompatActivity {
                                 Gson gs = new Gson();
                                 final LoginGsonGetterSetter userques = gs.fromJson(data.toString().trim(), LoginGsonGetterSetter.class);
                                 dialog.dismiss();
-
                                 if (userques.getTodayQuestion().size() > 0 && userques.getTodayQuestion().get(0).getStatus().equals("N")) {
                                     for (int i = 0; i < userques.getTodayQuestion().size(); i++) {
                                         if (userques.getTodayQuestion().get(i).getRightAnswer().toString().equalsIgnoreCase("true")) {
