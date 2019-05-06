@@ -2584,22 +2584,49 @@ public class Lorealba_Database extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<InvoiceGetterSetter> getConsumerSaleHistry() {
-        ArrayList<InvoiceGetterSetter> list = new ArrayList<>();
+    public ArrayList<ProductMaster> getConsumerSaleHistry(String mobile_no, String consumer_date) {
+        ArrayList<ProductMaster> list = new ArrayList<>();
         Cursor dbcursor = null;
         try {
-            dbcursor = db.rawQuery("Select * from Consumer_Sales_History", null);
+            dbcursor = db.rawQuery("Select * from Consumer_Sales_History where MobileNumber='" + mobile_no + "'and VisitDate='" + consumer_date + "'", null);
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
-                    InvoiceGetterSetter sale = new InvoiceGetterSetter();
-                    sale.setProduct_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductId")));
-                    sale.setProduct(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
-                    sale.setMobile_no(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MobileNumber")));
-                    sale.setCustomer_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ConsumerName")));
-                    sale.setQuantity(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Qtysold")));
+                    ProductMaster sale = new ProductMaster();
+                    sale.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sale.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sale.setConsumer_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ConsumerName")));
+                    sale.setConsumer_qty(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Qtysold")));
                     sale.setVisit_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VisitDate")));
-                    sale.setScan_ean_code_or_enterd_ean_code(dbcursor.getString(dbcursor.getColumnIndexOrThrow("EanCode")));
+                    list.add(sale);
+
+                    dbcursor.moveToNext();
+                }
+
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception Brands",
+                    e.toString());
+            return list;
+        }
+        return list;
+    }
+
+
+    public ArrayList<ProductMaster> getConsumer_date(String mobile_no) {
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("Select distinct VisitDate,MobileNumber from Consumer_Sales_History where MobileNumber='" + mobile_no + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sale = new ProductMaster();
+                    sale.setVisit_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VisitDate")));
+                    sale.setMobile_no(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MobileNumber")));
                     list.add(sale);
                     dbcursor.moveToNext();
                 }

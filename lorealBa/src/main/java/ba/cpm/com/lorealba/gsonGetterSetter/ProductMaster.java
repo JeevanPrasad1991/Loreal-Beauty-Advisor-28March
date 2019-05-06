@@ -262,4 +262,43 @@ public class ProductMaster {
     public void setStock(int stock) {
         this.stock = stock;
     }
+
+    public String getConsumer_name() {
+        return consumer_name;
+    }
+
+    public void setConsumer_name(String consumer_name) {
+        this.consumer_name = consumer_name;
+    }
+
+    String consumer_name;
+
+    public String getVisit_date() {
+        return visit_date;
+    }
+
+    public void setVisit_date(String visit_date) {
+        this.visit_date = visit_date;
+    }
+
+    public String getConsumer_qty() {
+        return consumer_qty;
+    }
+
+    public void setConsumer_qty(String consumer_qty) {
+        this.consumer_qty = consumer_qty;
+    }
+
+    String visit_date;
+    String consumer_qty;
+
+    public String getMobile_no() {
+        return mobile_no;
+    }
+
+    public void setMobile_no(String mobile_no) {
+        this.mobile_no = mobile_no;
+    }
+
+    String mobile_no;
 }

@@ -62,7 +62,7 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Non_Stock_Reason");
             keysList.add("Stock_Data");
             keysList.add("Stock_Tester_Data");
-            keysList.add("Stock_PwpGwp_Data");
+           // keysList.add("Stock_PwpGwp_Data");
             keysList.add("Stock_Sample_Data");
             keysList.add("Consumer_Sales_History");
 

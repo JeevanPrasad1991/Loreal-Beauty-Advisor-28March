@@ -64,9 +64,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProformaInvoiceActivity extends AppCompatActivity implements View.OnClickListener {
-    String subaxename = "", brand_name = "", brand_Id = "0", product_name = "", product_Id = "0", product_mrp = "0"  , store_cd, visit_date, username, store_name, store_address;
+    String subaxename = "", brand_name = "", brand_Id = "0", product_name = "", product_Id = "0", product_mrp = "0", store_cd, visit_date, username, store_name, store_address;
     ArrayAdapter<CharSequence> category_reason_adapter, brand_reason_adapter, sku_reason_adapter;
-  ;
+    ;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
 
@@ -81,7 +81,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
     InvoiceGetterSetter object;
     String product_scan_code = "";
     FloatingActionButton fab;
-    TextView qrcode_text, sku_name,stock_text_value;
+    TextView qrcode_text, sku_name, stock_text_value, txt_history;
     EditText edt_scan_code;
     CardView card_layout_scan, card_layout_title;
     CheckBox mobile_checkbox, no_name_checkbox;
@@ -126,6 +126,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         fab = (FloatingActionButton) findViewById(R.id.fab);
         edt_customer = (EditText) findViewById(R.id.edt_customer);
         edt_mobile_no = (EditText) findViewById(R.id.edt_mobile_no);
+        txt_history = (TextView) findViewById(R.id.txt_history);
         drawer_layout_recycle_store = (RecyclerView) findViewById(R.id.drawer_layout_recycle_store);
 
         mobile_checkbox = (CheckBox) findViewById(R.id.mobile_checkbox);
@@ -143,12 +144,27 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         img_home.setOnClickListener(this);
         mobile_checkbox.setOnClickListener(this);
         no_name_checkbox.setOnClickListener(this);
+        txt_history.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.txt_history:
+                if (edt_mobile_no.getText().toString().isEmpty()) {
+                    Snackbar.make(btn_scan, "Please enter mobile number.", Snackbar.LENGTH_SHORT).show();
+                } else if (edt_mobile_no.getText().toString().length() < 10) {
+                    Snackbar.make(btn_scan, "Please enter atleast 10 digit contact number", Snackbar.LENGTH_SHORT).show();
+                } else if (checkindex()) {
+                    if (db.getConsumer_date(edt_mobile_no.getText().toString()).size() > 0) {
+                        show_consumer_previous_histry(context, edt_mobile_no.getText().toString());
+                    } else {
+                        Snackbar.make(btn_scan, "No Previous Consumer History", Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+
+                break;
             case R.id.mobile_checkbox:
                 if (mobile_checkbox.isChecked()) {
                     no_mobile_no_flag = true;
@@ -223,7 +239,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
                     });
                     builder.show();
                 } else {
-                    Snackbar.make(fab, "Please add first sale_trcking_name", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(fab, "Please add first sale_trcking_name", Snackbar.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -316,7 +332,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
             @Override
             public void onClick(View v) {
                 if (minteger == 0) {
-                    Snackbar.make(stock_img_minus, "Product quantity should not be less than Zero", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(stock_img_minus, "Product quantity should not be less than Zero", Snackbar.LENGTH_SHORT).show();
                 } else {
                     minteger = minteger - 1;
                     stock_text_value.setText("" + minteger);
@@ -343,11 +359,11 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
             @Override
             public void onClick(View v) {
                 if (!flag_for_rl && edt_scan_code.getText().toString().isEmpty()) {
-                    Snackbar.make(btn_add, "Please Enter Bar Code.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please Enter Bar Code.", Snackbar.LENGTH_SHORT).show();
                 } else {
                     if (db.getsku_fromproductusing_eancode(product_scan_code).size() == 0) {
                         edt_scan_code.setText("");
-                        Snackbar.make(btn_add, "Invalid Bar Code.Please try again.", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(btn_add, "Invalid Bar Code.Please try again.", Snackbar.LENGTH_SHORT).show();
                     } else {
                         show_dialog_forsku(context, db.getsku_fromproductusing_eancode(product_scan_code));
                     }
@@ -366,18 +382,18 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
 
 
                 if (flag_for_rl && qrcode_text.getText().toString().isEmpty()) {
-                    Snackbar.make(btn_add, "Please Scan Bar Code.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please Scan Bar Code.", Snackbar.LENGTH_SHORT).show();
                 } else if (!flag_for_rl && edt_scan_code.getText().toString().isEmpty()) {
-                    Snackbar.make(btn_add, "Please Enter Bar Code.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please Enter Bar Code.", Snackbar.LENGTH_SHORT).show();
                 } else if (stock_text_value.getText().toString().equals("0")) {
-                    Snackbar.make(btn_add, "Please add atleast One Product Quantity.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please add atleast One Product Quantity.", Snackbar.LENGTH_SHORT).show();
                 } else {
                     object = new InvoiceGetterSetter();
                     if (checkduplicate_entry()) {
                         if (!flag_for_rl) {
                             product_scan_code = edt_scan_code.getText().toString();
                             if (db.getsku_fromproductusing_eancode(product_scan_code).size() == 0) {
-                                Snackbar.make(btn_add, "Product not found", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(btn_add, "Product not found", Snackbar.LENGTH_SHORT).show();
                             } else {
                                 minteger = 0;
                                 multiPurposeDialog.cancel();
@@ -473,7 +489,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         if (result != null) {
             if (result.getContents() == null) {
                 Log.d("ScanActivity", "Cancelled scan");
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
             } else {
                 if (db.getsku_fromproductusing_eancode(result.getContents()).size() > 0) {
                     show_dialog_forsku(context, db.getsku_fromproductusing_eancode(result.getContents()));
@@ -487,7 +503,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
                     product_scan_code = "";
                     qrcode_text.setText("");
                     minteger = 0;
-                    Toast.makeText(context, "Unable to scan currect data. Please try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Unable to scan currect data. Please try again", Toast.LENGTH_SHORT).show();
                 }
             }
         } else
@@ -758,7 +774,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
             @Override
             public void onClick(View v) {
                 if (minteger == 0) {
-                    Snackbar.make(stock_img_minus, "Product quantity should not be less than Zero", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(stock_img_minus, "Product quantity should not be less than Zero", Snackbar.LENGTH_SHORT).show();
                 } else {
                     minteger = minteger - 1;
                     stock_text_value.setText("" + minteger);
@@ -775,13 +791,13 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
                 // find the radiobutton by returned id
                 radioSexButton = (RadioButton) findViewById(selectedId);
                 if (category_spin.getSelectedItemId() == 0) {
-                    Snackbar.make(btn_add, "Please Select Sub Axe Name.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please Select Sub Axe Name.", Snackbar.LENGTH_SHORT).show();
                 } else if (brand_spin.getSelectedItemId() == 0) {
-                    Snackbar.make(btn_add, "Please Select Brand.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please Select Brand.", Snackbar.LENGTH_SHORT).show();
                 } else if (sku_spin.getSelectedItemId() == 0) {
-                    Snackbar.make(btn_add, "Please Select Product.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please Select Product.", Snackbar.LENGTH_SHORT).show();
                 } else if (stock_text_value.getText().toString().equals("0")) {
-                    Snackbar.make(btn_add, "Please Enter Product Quantity.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(btn_add, "Please Enter Product Quantity.", Snackbar.LENGTH_SHORT).show();
                 } else {
                     if (checkduplicate_entry()) {
                         object = new InvoiceGetterSetter();
@@ -837,7 +853,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         TextView sale_trcking_name = (TextView) multiPurposeDialog.findViewById(R.id.sale_trcking_name);
         sale_trcking_name.setText(skuList_with_eancode.get(0).getProductName());
         RecyclerView recycl_sku = (RecyclerView) multiPurposeDialog.findViewById(R.id.recycl_sku);
-        recycl_sku.setAdapter(new AdapterforSku(context, skuList_with_eancode, multiPurposeDialog));
+        recycl_sku.setAdapter(new AdapterforSku(context, skuList_with_eancode, multiPurposeDialog, "0"));
         recycl_sku.setLayoutManager(new LinearLayoutManager(context));
         ImageView dismiss_dialog = (ImageView) multiPurposeDialog.findViewById(R.id.dismiss_dialog);
         dismiss_dialog.setOnClickListener(new View.OnClickListener() {
@@ -853,11 +869,13 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
     public class AdapterforSku extends RecyclerView.Adapter<AdapterforSku.MyViewHolder> {
         private LayoutInflater inflator;
         List<ProductMaster> data;
+        String show_dialog;
         MultiPurposeDialog multiPurposeDialog;
 
-        public AdapterforSku(Context context, List<ProductMaster> data, MultiPurposeDialog multiPurposeDialog) {
+        public AdapterforSku(Context context, List<ProductMaster> data, MultiPurposeDialog multiPurposeDialog, String show_dialog) {
             inflator = LayoutInflater.from(context);
             this.data = data;
+            this.show_dialog = show_dialog;
             this.multiPurposeDialog = multiPurposeDialog;
         }
 
@@ -867,25 +885,51 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
             return new AdapterforSku.MyViewHolder(view);
         }
 
+
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             final ProductMaster current = data.get(position);
+            if (show_dialog.equals("1")) {
+                holder.sale_card.setVisibility(View.VISIBLE);
+                holder.sale_card.setId(position);
+                holder.consumerhistory_card.setVisibility(View.VISIBLE);
+                holder.consumerhistory_card.setId(position);
+                holder.sale_trcking_name.setText("Date : " + current.getVisit_date());
+                holder.sale_trcking_name.setId(position);
 
-            holder.sale_trcking_name.setText("(MRP - " + current.getMrp().toString() + ")");
-            holder.sale_trcking_name.setId(position);
+                ArrayList<ProductMaster> consumerList = db.getConsumerSaleHistry(current.getMobile_no(), current.getVisit_date());
+                if (consumerList.size() > 0) {
+                    for (int k = 0; k < consumerList.size(); k++) {
+                        holder.consume_product.setText(consumerList.get(k).getProductName());
+                        holder.consume_product.setId(position);
 
-
-            holder.sale_card.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    qrcode_text.setText(current.getEanCode());
-                    product_name = current.getProductName();
-                    product_Id = current.getProductId().toString();
-                    product_scan_code = current.getEanCode();
-                    product_mrp = current.getMrp().toString();
-                    multiPurposeDialog.dismiss();
+                        holder.consume_product_qty_with_date.setText("Quantity : " + consumerList.get(k).getConsumer_qty());
+                        holder.consume_product_qty_with_date.setId(position);
+                    }
                 }
-            });
+
+
+            } else {
+                holder.sale_card.setVisibility(View.VISIBLE);
+                holder.sale_card.setId(position);
+                holder.consumerhistory_card.setVisibility(View.GONE);
+                holder.consumerhistory_card.setId(position);
+
+                holder.sale_trcking_name.setText("(MRP - " + current.getMrp().toString() + ")");
+                holder.sale_trcking_name.setId(position);
+
+                holder.sale_card.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        qrcode_text.setText(current.getEanCode());
+                        product_name = current.getProductName();
+                        product_Id = current.getProductId().toString();
+                        product_scan_code = current.getEanCode();
+                        product_mrp = current.getMrp().toString();
+                        multiPurposeDialog.dismiss();
+                    }
+                });
+            }
         }
 
 
@@ -895,14 +939,23 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView sale_trcking_name;
-            CardView sale_card;
+            TextView sale_trcking_name, consume_product, consume_product_qty_with_date;
+            CardView sale_card, consumerhistory_card;
+            RecyclerView consumer_recycle;
+            ImageView btn_ok;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
                 sale_card = (CardView) itemView.findViewById(R.id.sale_card);
                 sale_trcking_name = (TextView) itemView.findViewById(R.id.sale_trcking_name);
+                ////for consumer product
+                consumerhistory_card = (CardView) itemView.findViewById(R.id.consumerhistory_card);
+                consume_product_qty_with_date = (TextView) itemView.findViewById(R.id.consume_product_qty_with_date);
+                consume_product = (TextView) itemView.findViewById(R.id.consume_product);
+                btn_ok = (ImageView) itemView.findViewById(R.id.btn_ok);
+                consumer_recycle=(RecyclerView)itemView.findViewById(R.id.consumer_recycle);
             }
+
         }
     }
 
@@ -933,5 +986,38 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         }
         return status;
     }
+
+
+    private void show_consumer_previous_histry(final Context context, String consumer_mobile_no) {
+        multiPurposeDialog = new MultiPurposeDialog(context);
+        multiPurposeDialog.setContentView(R.layout.custom_sku_adapter);
+        final WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(multiPurposeDialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        multiPurposeDialog.getWindow().setAttributes(lp);
+        multiPurposeDialog.setCancelable(false);
+        TextView txt_bar_code = multiPurposeDialog.findViewById(R.id.txt_bar_code);
+        txt_bar_code.setText("Consumer History");
+        TextView sale_trcking_name = (TextView) multiPurposeDialog.findViewById(R.id.sale_trcking_name);
+        sale_trcking_name.setVisibility(View.GONE);
+
+        RecyclerView recycl_sku = (RecyclerView) multiPurposeDialog.findViewById(R.id.recycl_sku);
+
+        //recycl_sku.setAdapter(new AdapterforSku(context, db.getConsumerSaleHistry(consumer_mobile_no), multiPurposeDialog, "1"));
+        recycl_sku.setAdapter(new AdapterforSku(context, db.getConsumer_date(consumer_mobile_no), multiPurposeDialog, "1"));
+        recycl_sku.setLayoutManager(new LinearLayoutManager(context));
+        ImageView dismiss_dialog = (ImageView) multiPurposeDialog.findViewById(R.id.dismiss_dialog);
+        dismiss_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                multiPurposeDialog.dismiss();
+            }
+        });
+
+        multiPurposeDialog.show();
+    }
+
 
 }

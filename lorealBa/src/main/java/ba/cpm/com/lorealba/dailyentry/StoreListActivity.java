@@ -123,7 +123,11 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             store_contact_no.setText("Store Contact Number : " + object.getContactNo());
             channel_text.setText("Distributor Name : " + object.getDistributorName());
             if (database.getSpecificCoverageData(date, object.getStoreId().toString()).size() > 0) {
-                img_check_in.setImageResource(R.drawable.checked_in);
+                if (validation_for_checkout(object)){
+                    img_check_in.setImageResource(R.drawable.check_out);
+                }else {
+                    img_check_in.setImageResource(R.drawable.checked_in);
+                }
             } else {
                 img_check_in.setImageResource(R.drawable.check_in_btn);
             }
