@@ -35,5 +35,8 @@
     <color name="storeimage">#d4f4f8</color>
     <color name="grayfor_login">#2B2B2B</color>
     <color name="pinkicolor">#E42474</color>
+    <color name="tab_background_selected">#c8c3c3</color>
+
+
 
 </resources>

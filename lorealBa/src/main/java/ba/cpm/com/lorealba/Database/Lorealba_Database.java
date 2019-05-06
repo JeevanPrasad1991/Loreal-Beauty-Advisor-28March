@@ -19,16 +19,31 @@ import java.util.List;
 import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.delegates.CoverageBean;
 import ba.cpm.com.lorealba.gettersetter.GeotaggingBeans;
+import ba.cpm.com.lorealba.gettersetter.GroomingGetterSetter;
+import ba.cpm.com.lorealba.gettersetter.HeaderGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.AuditQuestion;
+import ba.cpm.com.lorealba.gsonGetterSetter.ConsumerSalesHistory;
 import ba.cpm.com.lorealba.gsonGetterSetter.DashboardDataGetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.InvoiceGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.InwardSalesPO;
 import ba.cpm.com.lorealba.gsonGetterSetter.JCPGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.JourneyPlan;
 import ba.cpm.com.lorealba.gsonGetterSetter.NonPromotionReason;
+import ba.cpm.com.lorealba.gsonGetterSetter.NonStockReason;
+import ba.cpm.com.lorealba.gsonGetterSetter.NonStockReasonGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.NonWorkingReason;
 import ba.cpm.com.lorealba.gsonGetterSetter.NonWorkingReasonGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.NotificationData;
 import ba.cpm.com.lorealba.gsonGetterSetter.ProductMaster;
 import ba.cpm.com.lorealba.gsonGetterSetter.PromotionMaster;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockDataGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockDatum;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockPwpGwpDataGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockPwpGwpDatum;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockSampleDataGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockSampleDatum;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockTesterDataGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockTesterDatum;
 import ba.cpm.com.lorealba.gsonGetterSetter.TableStructureGetterSetter;
 
 /**
@@ -64,6 +79,17 @@ public class Lorealba_Database extends SQLiteOpenHelper {
             db.execSQL(CommonString.Create_Table_promotion);
             db.execSQL(CommonString.CREATE_TABLE_ATTENDENCE_TABLE);
             db.execSQL(CommonString.CREATE_TABLE_STORE_GEOTAGGING);
+
+            /////////////////////USK
+            db.execSQL(CommonString.CREATE_TABLE_FOCUS_PRODUCT_OPENINGHEADER_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_FOCUS_PRODUCT_STOCK_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_INWARD_REASON_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_STOCK_TESTER_DATA_OPENINGHEADER_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_STOCK_TESTER_CHILD_DATA);
+            db.execSQL(CommonString.CREATE_TESTER_IMAGE_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_NOTIFICATION_DATA);
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1511,6 +1537,1069 @@ public class Lorealba_Database extends SQLiteOpenHelper {
                     NonPromotionReason sale = new NonPromotionReason();
                     sale.setPReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("PReason")));
                     sale.setPReasonId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("PReasonId")));
+                    list.add(sale);
+                    dbcursor.moveToNext();
+                }
+
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception Brands",
+                    e.toString());
+            return list;
+        }
+        return list;
+    }
+
+
+    ///////////////////////upendra code start////////////////////////////////////////////
+    public ArrayList<ProductMaster> getcategory_fromStockData(String sigature_id) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select distinct AxeName from Product_Master where SignatureId ='" + sigature_id + "'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    //  sb.setAxeId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("AxeId")));
+                    sb.setAxeName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("AxeName")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public ArrayList<ProductMaster> getcategory_wise_brand_fromStockData(String category_name, String sigature_id) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("select distinct SubAxeName from Product_Master where AxeName ='" + category_name + "' AND SignatureId='" + sigature_id + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    sb.setSubAxeName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SubAxeName")));
+
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public ArrayList<ProductMaster> getbrand_wise_sku_fromStockData(String subaxeName, String sigature_id, String storeId) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select pm.ProductName,pm.ProductId,pm.EanCode,pm.Mrp,sd.Stock from Product_Master pm " +
+                    "inner join Stock_Tester_Data sd on sd.ProductId=pm.ProductId where SubAxeName ='" + subaxeName + "' AND SignatureId='" + sigature_id + "'and sd.StoreId='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setEanCode(dbcursor.getString(dbcursor.getColumnIndexOrThrow("EanCode")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Stock")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public void insertStockData(String store_cd, String sigature_id, String visit_date, String category_id,
+                                HashMap<ProductMaster,
+                                        List<ProductMaster>> data, List<ProductMaster> save_listDataHeader) {
+        db.delete(CommonString.TABLE_INSERT_HEADER_STOCK_DATA, "AxeName" + "='" + category_id + "' AND SignatureId='" + sigature_id + "'AND STORE_ID='" + store_cd + "'", null);
+        db.delete(CommonString.TABLE_STORE_STOCK_CHILD_DATA, "AxeName" + "='" + category_id + "' AND SignatureId='" + sigature_id + "'AND STORE_ID='" + store_cd + "'", null);
+
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+
+        try {
+            db.beginTransaction();
+            for (int i = 0; i < save_listDataHeader.size(); i++) {
+                values.put("STORE_ID", store_cd);
+                values.put("AxeName", category_id);
+                values.put("SignatureId", sigature_id);
+                values.put(CommonString.KEY_VISIT_DATE, visit_date);
+                values.put("SubAxeName", save_listDataHeader.get(i).getSubAxeName());
+                long l = db.insert(CommonString.TABLE_INSERT_HEADER_STOCK_DATA, null, values);
+                for (int j = 0; j < data.get(save_listDataHeader.get(i)).size(); j++) {
+                    values1.put("Common_Id", (int) l);
+                    values1.put("STORE_ID", store_cd);
+                    values1.put("AxeName", category_id);
+                    values1.put("SignatureId", sigature_id);
+                    values1.put(CommonString.KEY_VISIT_DATE, visit_date);
+                    values1.put("SubAxeName", save_listDataHeader.get(i).getSubAxeName());
+                    values1.put("ProductName", data.get(save_listDataHeader.get(i)).get(j).getProductName());
+                    values1.put("ProductId", data.get(save_listDataHeader.get(i)).get(j).getProductId());
+                    values1.put("STOCK", data.get(save_listDataHeader.get(i)).get(j).getStock());
+                    values1.put("Mrp", data.get(save_listDataHeader.get(i)).get(j).getMrp());
+                    values1.put("STOCK_RECEIVED", data.get(save_listDataHeader.get(i)).get(j).getStock_receive());
+                    values1.put("REASON_ID", data.get(save_listDataHeader.get(i)).get(j).getResion_id());
+                    values1.put("REASON", data.get(save_listDataHeader.get(i)).get(j).getResion());
+
+                    db.insert(CommonString.TABLE_STORE_STOCK_CHILD_DATA, null, values1);
+                }
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public ArrayList<HeaderGetterSetter> getHeaderStock(String storeId) {
+        ArrayList<HeaderGetterSetter> list = new ArrayList<HeaderGetterSetter>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT ID FROM DR_STOCK_HEADER_DATA WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    HeaderGetterSetter sb = new HeaderGetterSetter();
+                    sb.setKeyId(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ID")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            return list;
+        }
+        return list;
+    }
+
+
+    public ArrayList<ProductMaster> getStockInsertedData(String storeId, String subaxeName, String signatureId) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_CHILD_DATA where SubAxeName ='" + subaxeName + "' AND SignatureId='" + signatureId + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public ArrayList<ProductMaster> getcategory_wise_brand_fromStockInword() {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("select distinct SubAxeName from Product_Master ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    sb.setSubAxeName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SubAxeName")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public ArrayList<ProductMaster> getStockInwordInsertedData(String storeId, String subaxeName) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_CHILD_DATA where SubAxeName ='" + subaxeName + "' AND STORE_D='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock_receive(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK_RECEIVED")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    sb.setResion_id(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("REASON_ID")));
+                    sb.setResion(dbcursor.getString(dbcursor.getColumnIndexOrThrow("REASON")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public ArrayList<ProductMaster> getbrand_wise_sku_fromStockInwordData(String subaxeName) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("select distinct ProductName,ProductId,EanCode,Mrp from Product_Master where SubAxeName='" + subaxeName + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setEanCode(dbcursor.getString(dbcursor.getColumnIndexOrThrow("EanCode")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public boolean insertInwordSalesPoData(TableStructureGetterSetter nonWorkingdata) {
+        db.delete("InwardSales_PO", null, null);
+        ContentValues values = new ContentValues();
+        List<InwardSalesPO> data = nonWorkingdata.getInwardSalesPO();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("CounterCode", data.get(i).getCounterCode());
+                values.put("CounterId", data.get(i).getCounterId());
+                values.put("GrnDate", data.get(i).getGrnDate());
+                values.put("GrnRefNo", data.get(i).getGrnRefNo());
+                values.put("GrnType", data.get(i).getGrnType());
+                values.put("MRP", data.get(i).getMRP());
+                values.put("ProductCode", data.get(i).getProductCode());
+                values.put("ProductId", data.get(i).getProductId());
+                values.put("QTY", data.get(i).getQTY());
+                values.put("StoreCode", data.get(i).getStoreCode());
+                values.put("StoreId", data.get(i).getStoreId());
+                values.put("UOM", data.get(i).getUOM());
+                values.put("ProductName", data.get(i).getProductName());
+
+                long id = db.insert("InwardSales_PO", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+
+    public ArrayList<InwardSalesPO> getInwordData(String date, String GrnType, String storeId) {
+
+        ArrayList<InwardSalesPO> list = new ArrayList<InwardSalesPO>();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("select  ProductName,ProductId,QTY,MRP,GrnDate,GrnType from InwardSales_PO where GrnType ='" + GrnType + "' AND StoreId='" + storeId + "' AND GrnDate = '" + date + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+
+                while (!dbcursor.isAfterLast()) {
+                    InwardSalesPO sb = new InwardSalesPO();
+
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setQTY((dbcursor.getInt(dbcursor.getColumnIndexOrThrow("QTY"))));
+                    sb.setStock((dbcursor.getInt(dbcursor.getColumnIndexOrThrow("QTY"))));
+                    sb.setMRP((dbcursor.getInt(dbcursor.getColumnIndexOrThrow("MRP"))));
+                    sb.setGrnDate((dbcursor.getString(dbcursor.getColumnIndexOrThrow("GrnDate"))));
+                    sb.setGrnDate((dbcursor.getString(dbcursor.getColumnIndexOrThrow("GrnType"))));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public void UpdatInwardStockData(String storeid, List<InwardSalesPO> inwardStockList) {
+        ContentValues values1 = new ContentValues();
+        try {
+
+            for (int i = 0; i < inwardStockList.size(); i++) {
+                InwardSalesPO productMaster = getProductStockData(storeid, inwardStockList.get(i).getProductId().toString());
+                productMaster.getStock();
+                int sumStock = productMaster.getStock() + inwardStockList.get(i).getStock();
+                values1.put("STOCK", sumStock);
+
+                db.update(CommonString.TABLE_STORE_STOCK_CHILD_DATA, values1, "STORE_ID" + "='" + storeid + "' AND ProductId " + "='" + inwardStockList.get(i).getProductId() + "'", null);
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public void UpdatInwardTesterStockData(String storeid, List<InwardSalesPO> inwardStockList) {
+        ContentValues values1 = new ContentValues();
+        try {
+
+            for (int i = 0; i < inwardStockList.size(); i++) {
+                InwardSalesPO productMaster = getProductStockTesterData(storeid, inwardStockList.get(i).getProductId().toString());
+                productMaster.getStock();
+                int sumStock = productMaster.getStock() + inwardStockList.get(i).getStock();
+                values1.put("STOCK", sumStock);
+
+                db.update(CommonString.TABLE_STORE_STOCK_TESTER_CHILD_DATA, values1, "STORE_ID" + "='" + storeid + "' AND ProductId " + "='" + inwardStockList.get(i).getProductId() + "'", null);
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+
+
+    public InwardSalesPO getProductStockData(String storeId, String ProductId) {
+
+        InwardSalesPO sb = new InwardSalesPO();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_CHILD_DATA where ProductId ='" + ProductId + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setMRP(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+        } catch (Exception e) {
+
+            return sb;
+        }
+        return sb;
+    }
+
+
+    public InwardSalesPO getProductStockTesterData(String storeId, String ProductId) {
+
+        InwardSalesPO sb = new InwardSalesPO();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_TESTER__CHILD_DATA where ProductId ='" + ProductId + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setMRP(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+        } catch (Exception e) {
+
+            return sb;
+        }
+
+        return sb;
+    }
+
+    public void insertInwardData(String store_cd, String visit_date, ArrayList<InwardSalesPO> inwardStock) {
+        db.delete(CommonString.TABLE_STORE_INWARD_REASON_DATA, " STORE_ID='" + store_cd + "'", null);
+        ContentValues values1 = new ContentValues();
+
+        try {
+            db.beginTransaction();
+
+            for (int j = 0; j < inwardStock.size(); j++) {
+
+                values1.put("STORE_ID", store_cd);
+                values1.put(CommonString.KEY_VISIT_DATE, visit_date);
+                values1.put("ProductName", inwardStock.get(j).getProductName());
+                values1.put("ProductId", inwardStock.get(j).getProductId());
+                values1.put("STOCK", inwardStock.get(j).getStock());
+                values1.put("REASON_ID", inwardStock.get(j).getReasonId());
+                values1.put("REASON", inwardStock.get(j).getReason());
+                values1.put("mrp", inwardStock.get(j).getMRP());
+
+                db.insert(CommonString.TABLE_STORE_INWARD_REASON_DATA, null, values1);
+
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public boolean insertNonStockReasonData(NonStockReasonGetterSetter nonWorkingdata) {
+        db.delete("Non_Stock_Reason", null, null);
+        ContentValues values = new ContentValues();
+        List<NonStockReason> data = nonWorkingdata.getNonStockReason();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("ReasonId", data.get(i).getReasonId());
+                values.put("Reason", data.get(i).getReason());
+
+                long id = db.insert("Non_Stock_Reason", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public ArrayList<NonStockReason> getNonStockData() {
+
+        ArrayList<NonStockReason> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("select * from Non_Stock_Reason", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    NonStockReason sb = new NonStockReason();
+
+                    sb.setReasonId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ReasonId")));
+                    sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason")));
+
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public boolean insertStockData(StockDataGetterSetter nonWorkingdata) {
+        db.delete("Stock_Data", null, null);
+        ContentValues values = new ContentValues();
+        List<StockDatum> data = nonWorkingdata.getStockData();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("StoreId", data.get(i).getStoreId());
+                values.put("Stock", data.get(i).getStock());
+                values.put("ProductId", data.get(i).getProductId());
+
+                long id = db.insert("Stock_Data", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertStockTesterData(StockTesterDataGetterSetter nonWorkingdata) {
+        db.delete("Stock_Tester_Data", null, null);
+        ContentValues values = new ContentValues();
+        List<StockTesterDatum> data = nonWorkingdata.getStockTesterData();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("ProductId", data.get(i).getProductId());
+                values.put("Stock", data.get(i).getStock());
+                values.put("StoreId", data.get(i).getStoreId());
+
+                long id = db.insert("Stock_Tester_Data", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+
+    public boolean insertPwpGwpData(StockPwpGwpDataGetterSetter nonWorkingdata) {
+        db.delete("Stock_PwpGwp_Data", null, null);
+        ContentValues values = new ContentValues();
+        List<StockPwpGwpDatum> data = nonWorkingdata.getStockPwpGwpData();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("ProductId", data.get(i).getProductId());
+                values.put("Stock", data.get(i).getStock());
+                values.put("StoreId", data.get(i).getStoreId());
+
+                long id = db.insert("Stock_PwpGwp_Data", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertsampleData(StockSampleDataGetterSetter nonWorkingdata) {
+        db.delete("Stock_Sample_Data", null, null);
+        ContentValues values = new ContentValues();
+        List<StockSampleDatum> data = nonWorkingdata.getStockSampleData();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("ProductId", data.get(i).getProductId());
+                values.put("Stock", data.get(i).getStock());
+                values.put("StoreId", data.get(i).getStoreId());
+
+                long id = db.insert("Stock_Sample_Data", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+
+    public ArrayList<ProductMaster> getbrand_wise_sku_fromStockTesterData(String subaxeName, String sigature_id, String storeId) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select pm.ProductName,pm.ProductId,pm.EanCode,pm.Mrp,sd.Stock from Product_Master pm " +
+                    "inner join Stock_Data sd on sd.ProductId=pm.ProductId where SubAxeName ='" + subaxeName + "' AND SignatureId='" + sigature_id + "'and sd.StoreId='" + storeId + "'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setEanCode(dbcursor.getString(dbcursor.getColumnIndexOrThrow("EanCode")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Stock")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public ArrayList<ProductMaster> getStockTesterInsertedData(String storeId, String subaxeName, String signatureId) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_TESTER__CHILD_DATA where SubAxeName ='" + subaxeName + "' AND SignatureId='" + signatureId + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public void insertStockTesterData(String store_cd, String sigature_id, String visit_date, String category_id,
+                                      HashMap<ProductMaster,
+                                              List<ProductMaster>> data, List<ProductMaster> save_listDataHeader) {
+        db.delete(CommonString.TABLE_INSERT_HEADER_STOCK_TESTER_DATA, "AxeName" + "='" + category_id + "' AND SignatureId='" + sigature_id + "'AND STORE_ID='" + store_cd + "'", null);
+        db.delete(CommonString.TABLE_STORE_STOCK_TESTER_CHILD_DATA, "AxeName" + "='" + category_id + "' AND SignatureId='" + sigature_id + "'AND STORE_ID='" + store_cd + "'", null);
+
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+
+        try {
+            db.beginTransaction();
+            for (int i = 0; i < save_listDataHeader.size(); i++) {
+                values.put("STORE_ID", store_cd);
+                values.put("AxeName", category_id);
+                values.put("SignatureId", sigature_id);
+                values.put(CommonString.KEY_VISIT_DATE, visit_date);
+                values.put("SubAxeName", save_listDataHeader.get(i).getSubAxeName());
+                long l = db.insert(CommonString.TABLE_INSERT_HEADER_STOCK_TESTER_DATA, null, values);
+                for (int j = 0; j < data.get(save_listDataHeader.get(i)).size(); j++) {
+                    values1.put("Common_Id", (int) l);
+                    values1.put("STORE_ID", store_cd);
+                    values1.put("AxeName", category_id);
+                    values1.put("SignatureId", sigature_id);
+                    values1.put(CommonString.KEY_VISIT_DATE, visit_date);
+                    values1.put("SubAxeName", save_listDataHeader.get(i).getSubAxeName());
+                    values1.put("ProductName", data.get(save_listDataHeader.get(i)).get(j).getProductName());
+                    values1.put("ProductId", data.get(save_listDataHeader.get(i)).get(j).getProductId());
+                    values1.put("STOCK", data.get(save_listDataHeader.get(i)).get(j).getStock());
+                    values1.put("Mrp", data.get(save_listDataHeader.get(i)).get(j).getMrp());
+                    values1.put("STOCK_RECEIVED", data.get(save_listDataHeader.get(i)).get(j).getStock_receive());
+                    values1.put("REASON_ID", data.get(save_listDataHeader.get(i)).get(j).getResion_id());
+                    values1.put("REASON", data.get(save_listDataHeader.get(i)).get(j).getResion());
+
+                    db.insert(CommonString.TABLE_STORE_STOCK_TESTER_CHILD_DATA, null, values1);
+
+                }
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public long insertGroomingImgData(GroomingGetterSetter groomingImg, String storeId, String visitDate, String sigature_id, String mCategory_id) {
+        db.delete(CommonString.TABLE_TESTER_IMAGE_DATA, " STORE_ID" + "='" + storeId + "' AND VISIT_DATE='" + visitDate + "'AND Sigature_id='" + sigature_id + "'AND Category_id='" + mCategory_id + "'", null);
+        ContentValues values = new ContentValues();
+        long l = 0;
+        try {
+            db.beginTransaction();
+
+            values.put(CommonString.KEY_STORE_ID, storeId);
+            values.put(CommonString.KEY_VISIT_DATE, visitDate);
+            values.put("Sigature_id", sigature_id);
+            values.put("Category_id", mCategory_id);
+            values.put("IMAGE1", groomingImg.getImage1());
+            values.put("IMAGE2", groomingImg.getImage2());
+            values.put("IMAGE3", groomingImg.getImage3());
+            values.put("IMAGE4", groomingImg.getImage4());
+
+            l = db.insert(CommonString.TABLE_TESTER_IMAGE_DATA, null, values);
+
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+
+        }
+        return l;
+    }
+
+
+    public GroomingGetterSetter getStockTestetImageData(String storeId, String Sigature_id, String Category_id) {
+        GroomingGetterSetter sb = new GroomingGetterSetter();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * from TESTER_IMAGE_DATA where Category_id ='" + Category_id + "' AND Sigature_id='" + Sigature_id + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+
+                    sb.setImage1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IMAGE1")));
+                    sb.setImage2(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IMAGE2")));
+                    sb.setImage3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IMAGE3")));
+                    sb.setImage4(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IMAGE4")));
+                    sb.setVisitDate(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIT_DATE")));
+                    sb.setStoreCd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")));
+                    sb.setSigature_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Sigature_id")));
+                    sb.setCategory_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Category_id")));
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+
+            }
+        } catch (Exception e) {
+
+
+        }
+        return sb;
+    }
+
+    public long insertNotificationData(String title, String body, String path, String visited_date) {
+        long id = 0;
+        ContentValues values = new ContentValues();
+        try {
+            values.put(CommonString.KEY_BODY, body);
+            values.put(CommonString.KEY_TITLE, title);
+            values.put(CommonString.KEY_VISIT_DATE, visited_date);
+            values.put(CommonString.KEY_PATH, path);
+
+            id = db.insert(CommonString.TABLE_NOTIFICATION_DATA, null, values);
+
+        } catch (Exception ex) {
+            Log.d("Database Exception ", ex.toString());
+            return 0;
+        }
+        return id;
+    }
+
+    public ArrayList<NotificationData> getNotificationList() {
+        ArrayList<NotificationData> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("Select * from " + CommonString.TABLE_NOTIFICATION_DATA + "", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    NotificationData notifyData = new NotificationData();
+                    notifyData.setBody(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BODY)));
+                    notifyData.setPath(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PATH)));
+                    notifyData.setTitle(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_TITLE)));
+                    notifyData.setVisited_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_VISIT_DATE)));
+                    list.add(notifyData);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            return list;
+        }
+        return list;
+    }
+
+    //  Upendra Cpm, [06.05.19 13:08]
+    public ArrayList<ProductMaster> getStockUploadData(String store_id, String visit_date) {
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM DR_STOCK_CHILD_DATA WHERE STORE_ID =" + store_id + "  AND VISIT_DATE='" + visit_date + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    sb.setAxeName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("AxeName")));
+                    sb.setSignatureId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("SignatureId")));
+                    sb.setSignatureName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SubAxeName")));
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    sb.setResion_id(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("REASON_ID")));
+                    sb.setResion(dbcursor.getString(dbcursor.getColumnIndexOrThrow("REASON")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public ArrayList<ProductMaster> getTesterUploadData(String store_id, String visit_date) {
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM DR_STOCK_TESTER__CHILD_DATA WHERE STORE_ID =" + store_id + "  AND VISIT_DATE='" + visit_date + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+                    sb.setAxeName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("AxeName")));
+                    sb.setSignatureId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("SignatureId")));
+                    sb.setSignatureName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SubAxeName")));
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    sb.setResion_id(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("REASON_ID")));
+                    sb.setResion(dbcursor.getString(dbcursor.getColumnIndexOrThrow("REASON")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public ArrayList<GroomingGetterSetter> getTesterImageUploadData(String store_id, String visit_date) {
+        ArrayList<GroomingGetterSetter> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM TESTER_IMAGE_DATA WHERE STORE_ID =" + store_id + "  AND VISIT_DATE='" + visit_date + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    GroomingGetterSetter sb = new GroomingGetterSetter();
+                    sb.setCategory_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("AxeName")));
+                    sb.setSigature_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SignatureId")));
+                    sb.setImage1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SubAxeName")));
+                    sb.setImage2(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setImage3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setImage3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setImage4(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+        return list;
+    }
+
+    public ArrayList<ProductMaster> getInwardUploadData(String store_id, String visit_date) {
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM DR_INWARD_REASON_DATA WHERE STORE_ID =" + store_id + "  AND VISIT_DATE='" + visit_date + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setMrp(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Mrp")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setStock(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("STOCK")));
+                    sb.setResion_id(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("REASON_ID")));
+                    sb.setResion(dbcursor.getString(dbcursor.getColumnIndexOrThrow("REASON")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+        return list;
+    }
+    ///////////////////////upendra code end////
+
+    public boolean insertcst_sales_histry(NonWorkingReasonGetterSetter cst) {
+        db.delete("Consumer_Sales_History", null, null);
+        ContentValues values = new ContentValues();
+        List<ConsumerSalesHistory> data = cst.getConsumerSalesHistory();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("ProductId", data.get(i).getProductId());
+                values.put("ProductName", data.get(i).getProductName());
+                values.put("Qtysold", data.get(i).getQtysold());
+                values.put("MobileNumber", data.get(i).getMobileNumber());
+                values.put("ConsumerName", data.get(i).getConsumerName());
+                values.put("VisitDate", data.get(i).getVisitDate());
+                values.put("EanCode", data.get(i).getEan_Code());
+
+                long id = db.insert("Consumer_Sales_History", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public ArrayList<InvoiceGetterSetter> getConsumerSaleHistry() {
+        ArrayList<InvoiceGetterSetter> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("Select * from Consumer_Sales_History", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    InvoiceGetterSetter sale = new InvoiceGetterSetter();
+                    sale.setProduct_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sale.setProduct(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sale.setMobile_no(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MobileNumber")));
+                    sale.setCustomer_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ConsumerName")));
+                    sale.setQuantity(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Qtysold")));
+                    sale.setVisit_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VisitDate")));
+                    sale.setScan_ean_code_or_enterd_ean_code(dbcursor.getString(dbcursor.getColumnIndexOrThrow("EanCode")));
                     list.add(sale);
                     dbcursor.moveToNext();
                 }

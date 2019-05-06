@@ -123,11 +123,9 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             store_contact_no.setText("Store Contact Number : " + object.getContactNo());
             channel_text.setText("Distributor Name : " + object.getDistributorName());
             if (database.getSpecificCoverageData(date, object.getStoreId().toString()).size() > 0) {
-                fab.setVisibility(View.GONE);
-                rl_checkin.setVisibility(View.VISIBLE);
+                img_check_in.setImageResource(R.drawable.checked_in);
             } else {
-                fab.setVisibility(View.VISIBLE);
-                rl_checkin.setVisibility(View.GONE);
+                img_check_in.setImageResource(R.drawable.check_in_btn);
             }
         }
     }
@@ -143,28 +141,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fab:
-                JourneyPlan object = storelist.get(0);
-                editor = preferences.edit();
-                editor.putString(CommonString.KEY_STOREVISITED_STATUS, "Yes");
-                editor.putString(CommonString.KEY_STORE_NAME, object.getStoreName());
-                editor.putString(CommonString.KEY_STORE_ADDRESS, object.getAddress() + "," + object.getCityName() + " " + object.getPincode());
-                editor.putString(CommonString.KEY_STORE_ID, object.getStoreId().toString());
-                editor.commit();
-                if (database.getSpecificCoverageData(date, object.getStoreId().toString()).size() == 0) {
-                    Intent in = new Intent(StoreListActivity.this, StoreimageActivity.class);
-                    startActivity(in);
-                    overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                } else {
-                    Intent in = new Intent(StoreListActivity.this, DealerBoardActivity.class);
-                    startActivity(in);
-                    overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    StoreListActivity.this.finish();
-                }
-                break;
-
             case R.id.img_check_in:
-                object = storelist.get(0);
+                JourneyPlan object = storelist.get(0);
                 editor = preferences.edit();
                 editor.putString(CommonString.KEY_STOREVISITED_STATUS, "Yes");
                 editor.putString(CommonString.KEY_STORE_NAME, object.getStoreName());
@@ -341,6 +319,37 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         // AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    private boolean validation_for_checkout(JourneyPlan current) {
+        boolean customer_wise_sale, promotion, daily_stock=true, inward_stock=true, tester_stock=true, pwpWith_gwp_stock=true, complete_data_flag;
+        if (database.getcategory_fromproduct().size() > 0) {
+            if (database.getsalestrackingList(current.getStoreId().toString(), current.getVisitDate()).size() > 0) {
+                customer_wise_sale = true;
+            } else {
+                customer_wise_sale = false;
+            }
+        } else {
+            customer_wise_sale = true;
+        }
+
+        if (database.getpromotion_master_data().size() > 0) {
+            if (database.getpromotion_inserted_data(current.getStoreId().toString(), current.getVisitDate()).size() > 0) {
+                promotion = true;
+            } else {
+                promotion = false;
+            }
+        } else {
+            promotion = true;
+        }
+
+        if (customer_wise_sale && promotion && daily_stock && inward_stock && tester_stock && pwpWith_gwp_stock){
+            complete_data_flag=true;
+        }else {
+            complete_data_flag=false;
+        }
+
+        return complete_data_flag;
     }
 
 

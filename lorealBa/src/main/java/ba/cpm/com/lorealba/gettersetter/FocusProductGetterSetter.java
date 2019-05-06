@@ -7,6 +7,23 @@ public class FocusProductGetterSetter {
     private  String customer_name;
     private  String mobile_no;
     private  String card_no;
+    private  String BrandName,BrandId;
+
+    public String getBrandName() {
+        return BrandName;
+    }
+
+    public void setBrandName(String brandName) {
+        BrandName = brandName;
+    }
+
+    public String getBrandId() {
+        return BrandId;
+    }
+
+    public void setBrandId(String brandId) {
+        BrandId = brandId;
+    }
 
     public String getCustomer_name() {
         return customer_name;

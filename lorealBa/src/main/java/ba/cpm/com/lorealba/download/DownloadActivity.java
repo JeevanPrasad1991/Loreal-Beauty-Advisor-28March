@@ -58,6 +58,13 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Dashboard_Data");
             keysList.add("Promotion_Master");
             keysList.add("Non_Promotion_Reason");
+            keysList.add("InwardSales_PO");
+            keysList.add("Non_Stock_Reason");
+            keysList.add("Stock_Data");
+            keysList.add("Stock_Tester_Data");
+            keysList.add("Stock_PwpGwp_Data");
+            keysList.add("Stock_Sample_Data");
+            keysList.add("Consumer_Sales_History");
 
             if (keysList.size() > 0) {
                 for (int i = 0; i < keysList.size(); i++) {

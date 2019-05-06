@@ -75,6 +75,14 @@ public class CommonString {
     public static final String KEY_USER_ID = "USER_ID";
     public static final String KEY_ID = "ID";
 
+
+    public static final String TABLE_NOTIFICATION_DATA = "Notification_Data";
+    public static final String KEY_TITLE = "Title";
+    public static final String KEY_BODY = "Body";
+
+    public static final Object UPLOAD_DEVICE_TOKEN_DETAILS = "1";
+
+
     public static final String TABLE_COVERAGE_DATA = "COVERAGE_DATA";
     public static final String CREATE_TABLE_COVERAGE_DATA = "CREATE TABLE  IF NOT EXISTS "
             + TABLE_COVERAGE_DATA + " (" + KEY_ID
@@ -199,4 +207,105 @@ public class CommonString {
             + "PROMO_IMG" + " VARCHAR, "
             + "REASON" + " VARCHAR, "
             + "REASON_ID" + " INTEGER)";
+
+    //////////////////////
+    public static final String TABLE_INSERT_HEADER_STOCK_DATA = "DR_STOCK_HEADER_DATA";
+    public static final String CREATE_TABLE_FOCUS_PRODUCT_OPENINGHEADER_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_INSERT_HEADER_STOCK_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + "AxeName"
+            + " VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + "COMMONID" + " INTEGER,"
+            + "STORE_ID" + " INTEGER,"
+            + "SignatureId" + " VARCHAR,"
+            + "SubAxeName" + " VARCHAR)";
+
+
+    public static final String TABLE_STORE_STOCK_CHILD_DATA = "DR_STOCK_CHILD_DATA";
+    public static final String CREATE_TABLE_FOCUS_PRODUCT_STOCK_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_STORE_STOCK_CHILD_DATA + " (" + "Common_Id"
+            + " INTEGER  ," + "AxeName"
+            + " VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + "STORE_ID" + " INTEGER,"
+            + "ProductId" + " INTEGER, "
+            + "ProductName" + " VARCHAR, "
+            + "STOCK" + " INTEGER, "
+            + "STOCK_RECEIVED" + " INTEGER, "
+            + "REASON_ID" + " INTEGER, "
+            + "REASON" + " VARCHAR, "
+            + "SignatureId" + " VARCHAR,"
+            + "Mrp" + " INTEGER, "
+            + "SubAxeName" + " VARCHAR)";
+
+    public static final String KEY_SIGNETURE_ID= "SIGNETURE_ID";
+
+    public static final String TABLE_STORE_INWARD_REASON_DATA = "DR_INWARD_REASON_DATA";
+    public static final String CREATE_TABLE_INWARD_REASON_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_STORE_INWARD_REASON_DATA + " (" + "Common_Id"
+            + " INTEGER  ,"
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + "STORE_ID" + " INTEGER,"
+            + "mrp" + " INTEGER,"
+            + "ProductId" + " INTEGER, "
+            + "ProductName" + " VARCHAR, "
+            + "STOCK" + " INTEGER, "
+            + "REASON_ID" + " INTEGER, "
+            + "REASON" + " VARCHAR)";
+
+
+    public static final String TABLE_INSERT_HEADER_STOCK_TESTER_DATA = "DR_STOCK_TESTER_DATA";
+    public static final String CREATE_TABLE_STOCK_TESTER_DATA_OPENINGHEADER_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_INSERT_HEADER_STOCK_TESTER_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + "AxeName"
+            + " VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + "COMMONID" + " INTEGER,"
+            + "STORE_ID" + " INTEGER,"
+            + "SignatureId" + " VARCHAR,"
+            + "SubAxeName" + " VARCHAR)";
+
+
+    public static final String TABLE_STORE_STOCK_TESTER_CHILD_DATA = "DR_STOCK_TESTER__CHILD_DATA";
+    public static final String CREATE_TABLE_STOCK_TESTER_CHILD_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_STORE_STOCK_TESTER_CHILD_DATA + " (" + "Common_Id"
+            + " INTEGER  ," + "AxeName"
+            + " VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + "STORE_ID" + " INTEGER,"
+            + "ProductId" + " INTEGER, "
+            + "ProductName" + " VARCHAR, "
+            + "STOCK" + " INTEGER, "
+            + "STOCK_RECEIVED" + " INTEGER, "
+            + "REASON_ID" + " INTEGER, "
+            + "REASON" + " VARCHAR, "
+            + "SignatureId" + " VARCHAR,"
+            + "Mrp" + " INTEGER, "
+            + "SubAxeName" + " VARCHAR)";
+
+
+
+    public static final String TABLE_TESTER_IMAGE_DATA = "TESTER_IMAGE_DATA";
+    public static final String CREATE_TESTER_IMAGE_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_TESTER_IMAGE_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_ID
+            + " INTEGER, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + "IMAGE1" + " VARCHAR,"
+            + "Sigature_id" + " INTEGER,"
+            + "Category_id" + " INTEGER,"
+            + "IMAGE2" + " VARCHAR,"
+            + "IMAGE3" + " VARCHAR,"
+            + "IMAGE4" + " VARCHAR)";
+
+
+    public static final String CREATE_TABLE_NOTIFICATION_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_NOTIFICATION_DATA
+            + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_BODY + " INTEGER,USER_ID VARCHAR, "
+            + KEY_TITLE + " VARCHAR,"
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_PATH + " VARCHAR)";
+    ///////////usk code  end//////////////////////
+
 }

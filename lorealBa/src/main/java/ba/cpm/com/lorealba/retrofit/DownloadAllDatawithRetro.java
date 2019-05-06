@@ -34,8 +34,13 @@ import ba.cpm.com.lorealba.constant.AlertandMessages;
 import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.gettersetter.ReferenceVariablesForDownloadActivity;
 import ba.cpm.com.lorealba.gsonGetterSetter.JCPGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.NonStockReasonGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.NonWorkingReasonGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.PromotionMaster;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockDataGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockPwpGwpDataGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockSampleDataGetterSetter;
+import ba.cpm.com.lorealba.gsonGetterSetter.StockTesterDataGetterSetter;
 import ba.cpm.com.lorealba.gsonGetterSetter.TableStructure;
 import ba.cpm.com.lorealba.gsonGetterSetter.TableStructureGetterSetter;
 import okhttp3.MediaType;
@@ -48,7 +53,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by upendrak on 15-12-2017.
+ * Created by jeevanp on 15-12-2017.
  */
 
 public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActivity {
@@ -88,19 +93,13 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
         int jsonIndex = 0;
 
         if (jsonStringList.size() > 0) {
-            final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .readTimeout(20, TimeUnit.SECONDS)
-                    .writeTimeout(20, TimeUnit.SECONDS)
-                    .connectTimeout(20, TimeUnit.SECONDS)
-                    .build();
+            final OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS).connectTimeout(20, TimeUnit.SECONDS).build();
             jsonString = jsonStringList.get(downloadindex);
             KeyName = KeyNames.get(downloadindex);
             jsonIndex = downloadindex;
-
             pd.setMessage("Downloading (" + downloadindex + "/" + listSize + ") \n" + KeyName + "");
             RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
-            adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create()).build();
+            adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient).addConverterFactory(GsonConverterFactory.create()).build();
             PostApi api = adapter.create(PostApi.class);
             Call<String> call = api.getDownloadAll(jsonData);
             final int[] finalJsonIndex = {jsonIndex};
@@ -207,6 +206,92 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                 }
                                             }
                                             break;
+
+                                        case "InwardSales_PO":
+                                            if (!data.contains("No Data")) {
+                                                inwardSales_POObject = new Gson().fromJson(data, TableStructureGetterSetter.class);
+                                                if (inwardSales_POObject != null && !db.insertInwordSalesPoData(inwardSales_POObject)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "InwardSales PO Data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+                                        case "Non_Stock_Reason":
+                                            if (!data.contains("No Data")) {
+                                                reasonObj = new Gson().fromJson(data, NonStockReasonGetterSetter.class);
+                                                if (reasonObj != null && !db.insertNonStockReasonData(reasonObj)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Non Stock Data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+
+                                        case "Stock_Data":
+                                            if (!data.contains("No Data")) {
+                                                stockDataObj = new Gson().fromJson(data, StockDataGetterSetter.class);
+                                                if (stockDataObj != null && !db.insertStockData(stockDataObj)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Stock Data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+                                        case "Stock_Tester_Data":
+                                            if (!data.contains("No Data")) {
+                                                stockTesterObj = new Gson().fromJson(data, StockTesterDataGetterSetter.class);
+                                                if (stockTesterObj != null && !db.insertStockTesterData(stockTesterObj)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Stock Tester Data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+                                        case "Stock_PwpGwp_Data":
+                                            if (!data.contains("No Data")) {
+                                                stockPowObj = new Gson().fromJson(data, StockPwpGwpDataGetterSetter.class);
+                                                if (stockPowObj != null && !db.insertPwpGwpData(stockPowObj)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Stock PwpGwp Data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+                                        case "Stock_Sample_Data":
+                                            if (!data.contains("No Data")) {
+                                                stockSampleObj = new Gson().fromJson(data, StockSampleDataGetterSetter.class);
+                                                if (stockSampleObj != null && !db.insertsampleData(stockSampleObj)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Stock Sample data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+                                        case "Consumer_Sales_History":
+                                            if (!data.contains("No Data")) {
+                                                cst_sales_histryObject = new Gson().fromJson(data, NonWorkingReasonGetterSetter.class);
+                                                if (cst_sales_histryObject != null && !db.insertcst_sales_histry(cst_sales_histryObject)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Consumer Sales History not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
                                     }
                                 }
                             }
@@ -412,7 +497,7 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                    downloadFile(data.get(i).getUrl(), data.get(i).getImageName(), folder);
+                downloadFile(data.get(i).getUrl(), data.get(i).getImageName(), folder);
             }
         }
 

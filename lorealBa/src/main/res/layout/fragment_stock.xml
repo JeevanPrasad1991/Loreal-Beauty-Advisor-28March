@@ -1,0 +1,41 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ba.cpm.com.lorealba.fragment.StockFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:weightSum="5"
+        android:layout_height="match_parent">
+
+
+        <ExpandableListView
+            android:id="@+id/lvExp_audit"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:layout_margin="6dp"
+            android:layout_weight="4.3"
+            android:visibility="visible"
+            android:layout_marginBottom="50dip"
+            android:scrollingCache="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight=".7"
+            android:layout_height="0dp" />
+
+    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/store_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="@dimen/text_25dp"
+        android:layout_marginBottom="80dp"
+        android:src="@mipmap/ic_save_white" />
+
+</FrameLayout>

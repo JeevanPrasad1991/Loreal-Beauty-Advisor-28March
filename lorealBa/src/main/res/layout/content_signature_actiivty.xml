@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ba.cpm.com.lorealba.dailyentry.SignatureActiivty"
+    tools:showIn="@layout/activity_signature_actiivty">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/loreal_paris"
+                android:layout_width="245dp"
+                android:layout_marginTop="40dp"
+                android:layout_height="96dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:background="@drawable/loreal"
+                android:layout_marginBottom="5dp" />
+            <ImageView
+                android:id="@+id/maybelline"
+                android:layout_width="245dp"
+                android:layout_marginTop="40dp"
+                android:layout_height="96dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:background="@drawable/maybelline"
+                android:layout_marginBottom="5dp" />
+
+        </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

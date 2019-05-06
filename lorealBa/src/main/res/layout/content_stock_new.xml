@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blank_screen"
+    android:orientation="vertical"
+    android:weightSum="100"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+    tools:showIn="@layout/activity_stock_entry">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:weightSum="12">
+
+        <ImageView
+            android:id="@+id/img_eyes"
+            android:layout_width="0dp"
+            android:layout_height="80px"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:layout_marginLeft="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/eyes_icon" />
+
+        <ImageView
+            android:id="@+id/img_lips"
+            android:layout_width="0dp"
+            android:layout_height="80px"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:layout_weight="3"
+            android:src="@drawable/lip_icon_grey" />
+
+        <ImageView
+            android:id="@+id/img_nail"
+            android:layout_width="0dp"
+            android:layout_height="80px"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/nail_icon_grey" />
+
+        <ImageView
+            android:id="@+id/img_face"
+            android:layout_width="0dp"
+            android:layout_height="80px"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/face_icon_grey" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/stock_recycle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:layout_margin="6dp"
+        android:layout_weight="80"></android.support.v7.widget.RecyclerView>
+
+    <ExpandableListView
+        android:id="@+id/lvExp_audit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:layout_margin="6dp"
+        android:visibility="visible"
+        android:layout_weight="80"
+        android:scrollingCache="false" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="12">
+
+        <ImageView
+            android:id="@+id/img_sample_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginLeft="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/sample_stock" />
+
+        <ImageView
+            android:id="@+id/img_tester_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="3"
+            android:src="@drawable/tester_stock" />
+
+        <ImageView
+            android:id="@+id/img_damaged_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/damaged_stock" />
+
+        <ImageView
+            android:id="@+id/img_invert_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/inward_stock" />
+    </LinearLayout>
+</LinearLayout>

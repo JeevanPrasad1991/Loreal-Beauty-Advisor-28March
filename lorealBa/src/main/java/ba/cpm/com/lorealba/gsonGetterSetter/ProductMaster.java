@@ -224,4 +224,42 @@ public class ProductMaster {
     public void setSignatureName(String signatureName) {
         this.signatureName = signatureName;
     }
+
+    private int stock=0;
+    private int stock_receive=0;
+    private int resion_id=0;
+    private String resion="";
+
+
+    public int getResion_id() {
+        return resion_id;
+    }
+
+    public void setResion_id(int resion_id) {
+        this.resion_id = resion_id;
+    }
+
+    public String getResion() {
+        return resion;
+    }
+
+    public void setResion(String resion) {
+        this.resion = resion;
+    }
+
+    public int getStock_receive() {
+        return stock_receive;
+    }
+
+    public void setStock_receive(int stock_receive) {
+        this.stock_receive = stock_receive;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
 }

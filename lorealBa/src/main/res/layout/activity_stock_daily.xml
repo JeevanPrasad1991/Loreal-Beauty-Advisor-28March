@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="ba.cpm.com.lorealba.dailyentry.StockDailyActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <ImageView
+                android:id="@+id/img_home"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:src="@drawable/home_icon" />
+
+            <ImageView
+                android:id="@+id/header_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:src="@drawable/sample36" />
+
+            <TextView
+                android:id="@+id/textv_sample"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="6"
+                android:gravity="center_vertical"
+                android:text="Tester Entry"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_18dp" />
+        </LinearLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabGravity="fill"
+            app:tabMaxWidth="0dp"
+            android:background="@color/colorPrimaryDark"
+            app:tabBackground="@drawable/tab_selection_color"
+            app:tabIndicatorHeight="3dp"
+            app:tabIndicatorColor="@color/white"
+            app:tabTextColor="@color/black"
+            app:tabMinWidth="64dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/white"
+           >
+        </android.support.design.widget.TabLayout>
+    </android.support.design.widget.AppBarLayout>
+ <!--   app:tabMode="scrollable"-->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="12">
+
+        <ImageView
+            android:id="@+id/img_sample_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginLeft="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/sample_stock" />
+
+        <ImageView
+            android:id="@+id/img_tester_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="3"
+            android:src="@drawable/tester_stock" />
+
+        <ImageView
+            android:id="@+id/img_damaged_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/damaged_stock" />
+
+        <ImageView
+            android:id="@+id/img_invert_stock"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_marginRight="@dimen/text_25dp"
+            android:layout_weight="3"
+            android:src="@drawable/inward_stock" />
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/storeAudit_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_marginLeft="@dimen/text_25dp"
+        android:visibility="gone"
+        android:layout_marginBottom="80dp"
+        android:src="@mipmap/ic_save_white" />
+
+    <include layout="@layout/footer_layout" />
+
+</android.support.design.widget.CoordinatorLayout>

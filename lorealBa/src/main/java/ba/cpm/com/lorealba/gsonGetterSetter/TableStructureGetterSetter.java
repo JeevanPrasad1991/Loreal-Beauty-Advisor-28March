@@ -22,4 +22,18 @@ public class TableStructureGetterSetter {
     public List<ProductMaster> getProductMaster() {
         return productMaster;
     }
+
+    @SerializedName("InwardSales_PO")
+    @Expose
+    private List<InwardSalesPO> inwardSalesPO = null;
+
+    public List<InwardSalesPO> getInwardSalesPO() {
+        return inwardSalesPO;
+    }
+
+    public void setInwardSalesPO(List<InwardSalesPO> inwardSalesPO) {
+        this.inwardSalesPO = inwardSalesPO;
+    }
+
+
 }

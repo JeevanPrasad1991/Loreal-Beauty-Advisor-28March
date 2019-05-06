@@ -134,4 +134,16 @@
     <string name="bluetooth_strLang">en</string>
     <string name="bluetooth_button_scan">Scan for devices</string>
     <string name="bluetooth_qr_code_Send_string">SDK 2D-Code print test.</string>
+    <string name="title_activity_stock_daily">StockDailyActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_signature_actiivty">SignatureActiivty</string>
+    <string name="title_activity_inword_stock">InwordStockActivity</string>
+    <string name="title_activity_tester">TesterActivity</string>
+    <string name="title_activity_signature_tester_actiivty">SignatureTesterActiivty</string>
 </resources>

@@ -115,4 +115,14 @@ public class InvoiceGetterSetter implements Serializable {
     }
 
     String store_address;
+
+    public String getVisit_date() {
+        return visit_date;
+    }
+
+    public void setVisit_date(String visit_date) {
+        this.visit_date = visit_date;
+    }
+
+    String visit_date;
 }

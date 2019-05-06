@@ -60,6 +60,8 @@ public interface PostApi {
     retrofit.Call<String> getUploadDataBaseBackup(@Body RequestBody body1);
     @POST("UploadJsonDetail")
     Call<JsonObject> getGeotag(@Body RequestBody request);
+    @retrofit2.http.POST("TokenDetail")
+    Call<ResponseBody> uploadTokenDetails(@Body RequestBody request);
 
 
     @POST("UploadJsonDetail")

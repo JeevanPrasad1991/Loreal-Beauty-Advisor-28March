@@ -8,26 +8,41 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import ba.cpm.com.lorealba.Database.Lorealba_Database;
 import ba.cpm.com.lorealba.LorealBaLoginActivty;
@@ -37,6 +52,16 @@ import ba.cpm.com.lorealba.constant.CommonString;
 import ba.cpm.com.lorealba.delegates.NavMenuItemGetterSetter;
 import ba.cpm.com.lorealba.download.DownloadActivity;
 import ba.cpm.com.lorealba.upload.PreviousDataUploadActivity;
+import ba.cpm.com.lorealba.retrofit.PostApi;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DealerBoardActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView recycle_recce, stock_recycle, recycler_self;
@@ -46,6 +71,15 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
     Lorealba_Database db;
     String date, userId;
     Context context;
+    String jsonString = "",username="";
+
+    String result= "";
+    int status = 0;
+
+
+    boolean isvalid;
+    JSONObject jsonObject = new JSONObject();
+    String title="",body="",path="",visited_date="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +123,157 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+
+        if (getIntent().getExtras() != null) {
+            for (String key : getIntent().getExtras().keySet()) {
+                if (key.equalsIgnoreCase("title")) {
+                    title = getIntent().getExtras().getString(key);
+                } else if (key.equalsIgnoreCase("body")) {
+                    body = getIntent().getExtras().getString(key);
+                } else if (key.equalsIgnoreCase("path")) {
+                    path = getIntent().getExtras().getString(key);
+                } else if (key.equalsIgnoreCase("Currentdate")) {
+                    visited_date = getIntent().getExtras().getString(key);
+                }
+            }
+
+            if (!title.equalsIgnoreCase("") && !body.equalsIgnoreCase("")) {
+                db.open();
+                long value = db.insertNotificationData(title, body, path, visited_date);
+                if (value > 0) {
+                    Toast.makeText(context, "Notification Inserted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Notification Not Inserted", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            // Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+//                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        try {
+                            jsonObject.put("UserName", username);
+                            // jsonObject.put("UserName", "firoz.alam@in.cpm-int.com");
+                            jsonObject.put("TokenId",token);
+                            jsonString = jsonObject.toString();
+                            result =  uploadDeviceTokenDetails(jsonString, CommonString.UPLOAD_DEVICE_TOKEN_DETAILS);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        switch (v.getId()){
             case R.id.take_backup:
                 take_backup();
                 break;
+        }
+    }
+
+
+    private String uploadDeviceTokenDetails(String jsonString, Object type) {
+        try {
+
+            status = 0;
+            isvalid = false;
+            final String[] data_global = {""};
+
+            RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
+
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .readTimeout(20, TimeUnit.SECONDS)
+                    .writeTimeout(20, TimeUnit.SECONDS)
+                    .connectTimeout(20, TimeUnit.SECONDS)
+                    .build();
+
+            Retrofit adapter = new Retrofit.Builder()
+                    .baseUrl(CommonString.URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
+                    .build();
+
+            PostApi api = adapter.create(PostApi.class);
+            Call<ResponseBody> call = null;
+
+            if (type == CommonString.UPLOAD_DEVICE_TOKEN_DETAILS) {
+                call = api.uploadTokenDetails(jsonData);
+            }
+
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    ResponseBody responseBody = response.body();
+                    String data = null;
+                    if (responseBody != null && response.isSuccessful()) {
+                        try {
+                            data = response.body().string();
+                            data = data.substring(1, data.length() - 1).replace("\\", "");
+                            if(data.equalsIgnoreCase("")){
+                                data_global[0] = "";
+                                isvalid = true;
+                                status = 1;
+                            }else{
+                                data = data.substring(1, data.length() - 1).replace("\\", "");
+                                data_global[0] = data;
+                                isvalid = true;
+                                status = 1;
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            isvalid = true;
+                            status = -2;
+                        }
+                    } else {
+                        isvalid = true;
+                        status = -1;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    isvalid = true;
+                    if (t instanceof SocketTimeoutException) {
+                        status = 3;
+                    } else if (t instanceof IOException) {
+                        status = 3;
+                    } else {
+                        status = 3;
+                    }
+
+                }
+            });
+
+            if (status == 1) {
+                return data_global[0];
+            } else if (status == 2) {
+                return CommonString.MESSAGE_NO_RESPONSE_SERVER;
+            } else if (status == 3) {
+                return CommonString.MESSAGE_SOCKETEXCEPTION;
+            } else if (status == -2) {
+                return CommonString.MESSAGE_INVALID_JSON;
+            } else {
+                return CommonString.KEY_FAILURE;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonString.KEY_FAILURE;
         }
     }
 
@@ -204,13 +381,13 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
                         startActivity(new Intent(context, MyLibraryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.daily_stock) {
-                        startActivity(new Intent(context, StockEntryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
+                        startActivity(new Intent(context, SignatureActiivty.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.damaged_stock) {
                         startActivity(new Intent(context, StockEntryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.inward_stock) {
-                        startActivity(new Intent(context, StockEntryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "3"));
+                        startActivity(new Intent(context, InwardStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
                     } else if (current.getIconImg() == R.drawable.customer_wise_sales) {
@@ -251,7 +428,8 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
                         startActivity(new Intent(context, SampleTesterStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.tester_stock) {
-                        startActivity(new Intent(context, SampleTesterStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
+
+                        startActivity(new Intent(context, SignatureTesterActiivty.class));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.notifications) {
                         if (db.getStoreData(date).size() > 0) {
@@ -315,7 +493,6 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
 
         sample_stock = R.drawable.sample_stock;
         tester_stock = R.drawable.tester_stock;
-
 
         int img[] = {daily_stock, damaged_stock, inword_stock, sample_stock, tester_stock};
         for (int i = 0; i < img.length; i++) {

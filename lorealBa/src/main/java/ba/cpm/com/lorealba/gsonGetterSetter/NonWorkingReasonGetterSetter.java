@@ -38,5 +38,13 @@ public class NonWorkingReasonGetterSetter {
     public List<NonPromotionReason> getNonPromotionReason() {
         return nonPromotionReason;
     }
+    @SerializedName("Consumer_Sales_History")
+    @Expose
+    private List<ConsumerSalesHistory> consumerSalesHistory = null;
+
+    public List<ConsumerSalesHistory> getConsumerSalesHistory() {
+        return consumerSalesHistory;
+    }
+
 
 }
