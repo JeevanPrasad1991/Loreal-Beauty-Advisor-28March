@@ -522,6 +522,7 @@ public class StockFragment extends Fragment {
         db.open();
 
         db.insertStockData(store_cd, sigature_id, visit_date, mCategory_id, listDataChild, listDataHeader);
+
     }
 
     private int getItem(int i) {

@@ -32,6 +32,10 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".dailyentry.ConsumerHistryActivity"></activity>
         <activity
+            android:name=".dailyentry.PwpGwpActivity"
+            android:label="@string/title_activity_pwp_gwp"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".dailyentry.SignatureTesterActiivty"
             android:label="@string/title_activity_signature_tester_actiivty"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -64,6 +68,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <service android:name=".service.MessageService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <!--
  <service
             android:name=".uploadimagesservice.BackgroundService"
@@ -159,6 +170,13 @@
             android:name=".dailyentry.JourneyPlanSearchActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:label="@string/title_activity_journey_plan_search"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".dailyentry.NotificationDetailActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />

@@ -79,6 +79,7 @@ public class CommonString {
     public static final String TABLE_NOTIFICATION_DATA = "Notification_Data";
     public static final String KEY_TITLE = "Title";
     public static final String KEY_BODY = "Body";
+    public static final String KEY_TYPE = "Message_Type";
 
     public static final Object UPLOAD_DEVICE_TOKEN_DETAILS = "1";
 
@@ -305,7 +306,18 @@ public class CommonString {
             + KEY_BODY + " INTEGER,USER_ID VARCHAR, "
             + KEY_TITLE + " VARCHAR,"
             + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_TYPE + " VARCHAR,"
             + KEY_PATH + " VARCHAR)";
     ///////////usk code  end//////////////////////
+
+    public static final String TABLE_STORE_PWP_GWP_DATA = "DR_STORE_PWP_GWP_DATA";
+    public static final String CREATE_TABLE_ISTORE_PWP_GWP_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_STORE_PWP_GWP_DATA + " (" + "Common_Id"
+            + " INTEGER  ,"
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + "STORE_ID" + " INTEGER,"
+            + "ProductId" + " INTEGER, "
+            + "ProductName" + " VARCHAR, "
+            + "STOCK" + " INTEGER)";
 
 }

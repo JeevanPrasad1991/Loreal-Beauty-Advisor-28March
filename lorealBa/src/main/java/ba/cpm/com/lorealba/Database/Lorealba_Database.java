@@ -52,8 +52,8 @@ import ba.cpm.com.lorealba.gsonGetterSetter.TableStructureGetterSetter;
  */
 
 public class Lorealba_Database extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "LorealBa_Datab";
-    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "LorealBa_Data";
+    public static final int DATABASE_VERSION = 3;
     private SQLiteDatabase db;
     Context context;
 
@@ -88,6 +88,7 @@ public class Lorealba_Database extends SQLiteOpenHelper {
             db.execSQL(CommonString.CREATE_TABLE_STOCK_TESTER_CHILD_DATA);
             db.execSQL(CommonString.CREATE_TESTER_IMAGE_DATA);
             db.execSQL(CommonString.CREATE_TABLE_NOTIFICATION_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_ISTORE_PWP_GWP_DATA);
 
 
         } catch (SQLException e) {
@@ -2161,8 +2162,11 @@ public class Lorealba_Database extends SQLiteOpenHelper {
             for (int i = 0; i < data.size(); i++) {
 
                 values.put("ProductId", data.get(i).getProductId());
+                values.put("ProductName", data.get(i).getProductName());
                 values.put("Stock", data.get(i).getStock());
                 values.put("StoreId", data.get(i).getStoreId());
+                values.put("StoreName", data.get(i).getStoreName());
+
 
                 long id = db.insert("Stock_PwpGwp_Data", null, values);
                 if (id == -1) {
@@ -2374,51 +2378,6 @@ public class Lorealba_Database extends SQLiteOpenHelper {
 
         }
         return sb;
-    }
-
-    public long insertNotificationData(String title, String body, String path, String visited_date) {
-        long id = 0;
-        ContentValues values = new ContentValues();
-        try {
-            values.put(CommonString.KEY_BODY, body);
-            values.put(CommonString.KEY_TITLE, title);
-            values.put(CommonString.KEY_VISIT_DATE, visited_date);
-            values.put(CommonString.KEY_PATH, path);
-
-            id = db.insert(CommonString.TABLE_NOTIFICATION_DATA, null, values);
-
-        } catch (Exception ex) {
-            Log.d("Database Exception ", ex.toString());
-            return 0;
-        }
-        return id;
-    }
-
-    public ArrayList<NotificationData> getNotificationList() {
-        ArrayList<NotificationData> list = new ArrayList<>();
-        Cursor dbcursor = null;
-        try {
-            dbcursor = db.rawQuery("Select * from " + CommonString.TABLE_NOTIFICATION_DATA + "", null);
-
-            if (dbcursor != null) {
-                dbcursor.moveToFirst();
-                while (!dbcursor.isAfterLast()) {
-                    NotificationData notifyData = new NotificationData();
-                    notifyData.setBody(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BODY)));
-                    notifyData.setPath(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PATH)));
-                    notifyData.setTitle(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_TITLE)));
-                    notifyData.setVisited_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_VISIT_DATE)));
-                    list.add(notifyData);
-                    dbcursor.moveToNext();
-                }
-                dbcursor.close();
-                return list;
-            }
-
-        } catch (Exception e) {
-            return list;
-        }
-        return list;
     }
 
     //  Upendra Cpm, [06.05.19 13:08]
@@ -2644,4 +2603,336 @@ public class Lorealba_Database extends SQLiteOpenHelper {
     }
 
 
+    ////usk today
+    public boolean isInwoardFilledData(String storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  STORE_ID " + "FROM " + CommonString.TABLE_STORE_INWARD_REASON_DATA + " WHERE STORE_ID = '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+
+            return filled;
+        }
+
+        return filled;
+    }
+
+
+    public ArrayList<ProductMaster> getSignatureDataList(String storeId, String visitDate) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_CHILD_DATA where  VISIT_DATE='" + visitDate + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setSignatureId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("SignatureId")));
+
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public ArrayList<ProductMaster> getCategoryDataList(String storeId, String visitDate, String signatureId) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_CHILD_DATA where VISIT_DATE ='" + visitDate + "' AND SignatureId='" + signatureId + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setAxeName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("AxeName")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public boolean isStockDataFilled(String storeId, String axeName, String visitDate) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_CHILD_DATA where AxeName ='" + axeName + "' AND VISIT_DATE='" + visitDate + "' AND STORE_ID='" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                int icount = dbcursor.getInt(0);
+                dbcursor.close();
+                if (icount > 0) {
+                    filled = true;
+                } else {
+                    filled = false;
+                }
+            }
+        } catch (Exception e) {
+
+            return filled;
+        }
+        return filled;
+    }
+///////////////////////
+
+
+    public ArrayList<ProductMaster> getSignatureTesterDataList(String storeId, String visitDate) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_TESTER__CHILD_DATA where  VISIT_DATE='" + visitDate + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setSignatureId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("SignatureId")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public ArrayList<ProductMaster> getCategoryTestrDataList(String storeId, String visitDate, String signatureId) {
+
+        ArrayList<ProductMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_TESTER__CHILD_DATA where VISIT_DATE ='" + visitDate + "' AND SignatureId='" + signatureId + "' AND STORE_ID='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ProductMaster sb = new ProductMaster();
+
+                    sb.setAxeName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("AxeName")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+
+    public boolean isStockTestrDataFilled(String storeId, String axeName, String visitDate) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * from DR_STOCK_TESTER__CHILD_DATA where AxeName ='" + axeName + "' AND VISIT_DATE='" + visitDate + "' AND STORE_ID='" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                int icount = dbcursor.getInt(0);
+                dbcursor.close();
+                if (icount > 0) {
+                    filled = true;
+                } else {
+                    filled = false;
+                }
+            }
+        } catch (Exception e) {
+
+            return filled;
+        }
+        return filled;
+    }
+
+    public ArrayList<StockPwpGwpDatum> getPwpGwpData(String storeId) {
+
+        ArrayList<StockPwpGwpDatum> list = new ArrayList<StockPwpGwpDatum>();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("select  ProductName,ProductId,Stock from Stock_PwpGwp_Data where StoreId ='" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+
+                while (!dbcursor.isAfterLast()) {
+                    StockPwpGwpDatum sb = new StockPwpGwpDatum();
+
+                    sb.setProductName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ProductName")));
+                    sb.setProductId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("ProductId")));
+                    sb.setStock((dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Stock"))));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public void insertPwpGwpData(String store_cd, String visit_date, ArrayList<StockPwpGwpDatum> pwpGwpStock) {
+        db.delete(CommonString.TABLE_STORE_PWP_GWP_DATA, " STORE_ID='" + store_cd + "'", null);
+        ContentValues values1 = new ContentValues();
+
+        try {
+            db.beginTransaction();
+
+            for (int j = 0; j < pwpGwpStock.size(); j++) {
+
+                values1.put("STORE_ID", store_cd);
+                values1.put(CommonString.KEY_VISIT_DATE, visit_date);
+                values1.put("ProductName", pwpGwpStock.get(j).getProductName());
+                values1.put("ProductId", pwpGwpStock.get(j).getProductId());
+                values1.put("STOCK", pwpGwpStock.get(j).getStock());
+
+                db.insert(CommonString.TABLE_STORE_PWP_GWP_DATA, null, values1);
+
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+
+        }
+    }
+
+    public boolean isPwpGwpFilledData(String storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  STORE_ID " + "FROM " + CommonString.TABLE_STORE_PWP_GWP_DATA + " WHERE STORE_ID = '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+
+            return filled;
+        }
+
+        return filled;
+    }
+
+
+    public long insertNotificationData(String title, String body, String path, String visited_date, String type) {
+        long id = 0;
+        ContentValues values = new ContentValues();
+        try {
+            values.put(CommonString.KEY_BODY, body);
+            values.put(CommonString.KEY_TITLE, title);
+            values.put(CommonString.KEY_VISIT_DATE,visited_date);
+            values.put(CommonString.KEY_PATH, path);
+            values.put(CommonString.KEY_TYPE, type);
+
+            id = db.insert(CommonString.TABLE_NOTIFICATION_DATA, null, values);
+
+        } catch (Exception ex) {
+            Log.d("Database Exception ", ex.toString());
+            return 0;
+        }
+        return id;
+    }
+
+    public ArrayList<NotificationData> getNotificationList() {
+        ArrayList<NotificationData> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = getReadableDatabase().rawQuery("Select * from " + CommonString.TABLE_NOTIFICATION_DATA +"", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    NotificationData notifyData = new NotificationData();
+                    notifyData.setBody(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BODY)));
+                    notifyData.setPath(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PATH)));
+                    notifyData.setTitle(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_TITLE)));
+                    notifyData.setVisited_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_VISIT_DATE)));
+                    notifyData.setType(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_TYPE)));
+                    list.add(notifyData);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception Brands",
+                    e.toString());
+            return list;
+        }
+        return list;
+    }
 }

@@ -41,14 +41,7 @@ public class InwardStockActivity extends AppCompatActivity {
     Lorealba_Database db;
     Context context;
     String store_cd = "1", visit_date, user_type, username, stock_type;
-    //ArrayList<ProductMaster> productMasters = new ArrayList<>();
     String sigature_id;
-  //  boolean checkflag = true;
-   // List<ProductMaster> listDataHeader;
-    // HashMap<ProductMaster, List<ProductMaster>> listDataChild;
-    List<ProductMaster> questionList;
-    //   ArrayList<Integer> checkHeaderArray = new ArrayList<>();
-
     RecyclerView stock_recycle;
     ArrayList<InwardSalesPO> stockList=new ArrayList<>();;
     ArrayList<InwardSalesPO> stockTesterList=new ArrayList<>();;
@@ -64,7 +57,6 @@ public class InwardStockActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 db.open();
                 db.UpdatInwardStockData(store_cd, stockList);
@@ -373,6 +365,42 @@ public class InwardStockActivity extends AppCompatActivity {
             return view;
         }
 
+    }
+
+
+
+    private void get(){
+
+        ArrayList<ProductMaster> windowlist = db.getSignatureDataList(store_cd,visit_date);
+        for (int i = 0; i < windowlist.size(); i++) {
+
+            ArrayList<ProductMaster> signatureList = db.getCategoryDataList(store_cd,visit_date,windowlist.get(i).getSignatureId().toString());
+
+            for (int j = 0; j < signatureList.size(); j++) {
+                if (!db.isStockDataFilled(store_cd, signatureList.get(j).getAxeName(),visit_date)) {
+                   // isAllFilled = false;
+                    break;
+                }
+
+            }
+
+        }
+
+        ArrayList<ProductMaster> signatureList = db.getSignatureTesterDataList(store_cd,visit_date);
+        for (int i = 0; i < signatureList.size(); i++) {
+
+            ArrayList<ProductMaster> CategoryList = db.getCategoryTestrDataList(store_cd,visit_date,signatureList.get(i).getSignatureId().toString());
+
+            for (int j = 0; j < CategoryList.size(); j++) {
+                if (!db.isStockTestrDataFilled(store_cd, CategoryList.get(j).getAxeName(),visit_date)) {
+                    // isAllFilled = false;
+                    break;
+                }
+
+            }
+
+
+        }
     }
 
 

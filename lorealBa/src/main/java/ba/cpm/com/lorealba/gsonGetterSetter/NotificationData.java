@@ -1,7 +1,20 @@
 package ba.cpm.com.lorealba.gsonGetterSetter;
 
 public class NotificationData {
-    String title,body,path,visited_date;
+    String title;
+    String body;
+    String path;
+    String visited_date;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    String type;
 
     public String getTitle() {
         return title;

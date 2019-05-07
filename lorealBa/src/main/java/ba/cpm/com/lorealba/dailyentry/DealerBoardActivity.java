@@ -79,7 +79,7 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
 
     boolean isvalid;
     JSONObject jsonObject = new JSONObject();
-    String title="",body="",path="",visited_date="";
+    String title="",body="",path="",visited_date="",storeId,type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +93,8 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         date = preferences.getString(CommonString.KEY_DATE, null);
         userId = preferences.getString(CommonString.KEY_USERNAME, null);
-
+        storeId = preferences.getString(CommonString.KEY_STORE_ID, null);
+        storeId="1";
         recycle_recce = (RecyclerView) findViewById(R.id.recycle_recce);
         stock_recycle = (RecyclerView) findViewById(R.id.stock_recycle);
         recycler_self = (RecyclerView) findViewById(R.id.recycler_self);
@@ -136,20 +137,31 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
                     path = getIntent().getExtras().getString(key);
                 } else if (key.equalsIgnoreCase("Currentdate")) {
                     visited_date = getIntent().getExtras().getString(key);
+                }else if (key.equalsIgnoreCase("type")) {
+                    type = getIntent().getExtras().getString(key);
                 }
             }
 
             if (!title.equalsIgnoreCase("") && !body.equalsIgnoreCase("")) {
                 db.open();
-                long value = db.insertNotificationData(title, body, path, visited_date);
+                long value = db.insertNotificationData(title, body, path, visited_date, type);
                 if (value > 0) {
+                  //  createNotificationView();
                     Toast.makeText(context, "Notification Inserted", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Notification Not Inserted", Toast.LENGTH_SHORT).show();
                 }
             }
-        }
 
+            if(!title.equals("")){
+                Intent in = new Intent(getApplicationContext(), NotificationDetailActivity.class);
+                in.putExtra("Type", type);
+                in.putExtra("Title", title);
+                in.putExtra("Body", body);
+                in.putExtra("Path", path);
+                startActivity(in);
+            }
+        }
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -213,7 +225,6 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
             if (type == CommonString.UPLOAD_DEVICE_TOKEN_DETAILS) {
                 call = api.uploadTokenDetails(jsonData);
             }
-
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -381,14 +392,31 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
                         startActivity(new Intent(context, MyLibraryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     } else if (current.getIconImg() == R.drawable.daily_stock) {
-                        startActivity(new Intent(context, SignatureActiivty.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                        if (db.getStoreData(date).size() > 0) {
+                            startActivity(new Intent(context, SignatureActiivty.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
                     } else if (current.getIconImg() == R.drawable.damaged_stock) {
                         startActivity(new Intent(context, StockEntryActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "2"));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
                     } else if (current.getIconImg() == R.drawable.inward_stock) {
-                        startActivity(new Intent(context, InwardStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                        if (db.getStoreData(date).size() > 0) {
+                            if (db.isInwoardFilledData(storeId)) {
+                                Snackbar.make(holder.icon, "Already Data filled.", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                            }else {
+                                startActivity(new Intent(context, InwardStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+
+                        }else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
 
                     } else if (current.getIconImg() == R.drawable.customer_wise_sales) {
                         if (db.getStoreData(date).size() > 0) {
@@ -425,12 +453,29 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
                         }
 
                     } else if (current.getIconImg() == R.drawable.sample_stock) {
-                        startActivity(new Intent(context, SampleTesterStockActivity.class).putExtra(CommonString.KEY_STOCK_TYPE, "1"));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                        if (db.getStoreData(date).size() > 0) {
+
+                            if (db.isPwpGwpFilledData(storeId)) {
+                                Snackbar.make(holder.icon, "Already Data filled.", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                            }else {
+                                startActivity(new Intent(context, PwpGwpActivity.class));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+
+                        }else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
                     } else if (current.getIconImg() == R.drawable.tester_stock) {
 
-                        startActivity(new Intent(context, SignatureTesterActiivty.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (db.getStoreData(date).size() > 0) {
+                            startActivity(new Intent(context, SignatureTesterActiivty.class));
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }else {
+                            Snackbar.make(holder.icon, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                        }
+
                     } else if (current.getIconImg() == R.drawable.notifications) {
                         if (db.getStoreData(date).size() > 0) {
                             startActivity(new Intent(context, NotificationsActivity.class));
@@ -485,16 +530,18 @@ public class DealerBoardActivity extends AppCompatActivity implements View.OnCli
 
     public List<NavMenuItemGetterSetter> getdatafor_stock() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int daily_stock, damaged_stock, inword_stock, sample_stock, tester_stock;
+       int daily_stock, damaged_stock, inword_stock, sample_stock, tester_stock;
 
         daily_stock = R.drawable.daily_stock;
-        damaged_stock = R.drawable.damaged_stock;
+        //damaged_stock = R.drawable.damaged_stock;
         inword_stock = R.drawable.inward_stock;
 
         sample_stock = R.drawable.sample_stock;
         tester_stock = R.drawable.tester_stock;
 
-        int img[] = {daily_stock, damaged_stock, inword_stock, sample_stock, tester_stock};
+       // int img[] = {daily_stock, damaged_stock, inword_stock, sample_stock, tester_stock};
+        int img[] = {daily_stock, inword_stock, sample_stock, tester_stock};
+
         for (int i = 0; i < img.length; i++) {
             NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
             recData.setIconImg(img[i]);

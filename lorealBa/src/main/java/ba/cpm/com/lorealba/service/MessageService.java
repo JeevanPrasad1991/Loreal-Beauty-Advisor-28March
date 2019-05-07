@@ -21,24 +21,22 @@ public class MessageService extends FirebaseMessagingService {
 
     String TAG = "FCM";
     public static  int  NOTIFICATION_ID = 1;
-    String body="",path="",title="",visited_date="";
+    String body="",path="",title="",visited_date="",type;
     public MessageService() {
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
-
         body  = remoteMessage.getData().get("body");
         title = remoteMessage.getData().get("title");
         path  = remoteMessage.getData().get("path");
         visited_date  = remoteMessage.getData().get("Currentdate");
-
+        type  = remoteMessage.getData().get("type");
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data " + remoteMessage.getData());
             Lorealba_Database db = new Lorealba_Database(getApplicationContext());
             db.open();
-            long value = db.insertNotificationData(title,body,path,visited_date);
+            long value = db.insertNotificationData(title,body,path,visited_date,type);
 
            // scheduleJob(remoteMessage.getData());
         }

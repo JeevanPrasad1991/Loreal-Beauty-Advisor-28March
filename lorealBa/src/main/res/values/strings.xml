@@ -146,4 +146,5 @@
     <string name="title_activity_inword_stock">InwordStockActivity</string>
     <string name="title_activity_tester">TesterActivity</string>
     <string name="title_activity_signature_tester_actiivty">SignatureTesterActiivty</string>
+    <string name="title_activity_pwp_gwp">PwpGwpActivity</string>
 </resources>

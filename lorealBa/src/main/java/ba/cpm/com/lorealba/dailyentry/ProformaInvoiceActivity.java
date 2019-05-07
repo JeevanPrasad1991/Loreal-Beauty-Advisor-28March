@@ -145,6 +145,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         mobile_checkbox.setOnClickListener(this);
         no_name_checkbox.setOnClickListener(this);
         txt_history.setOnClickListener(this);
+//        edt_mobile_no.setText("9871399833");
 
     }
 
@@ -899,13 +900,16 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
 
                 ArrayList<ProductMaster> consumerList = db.getConsumerSaleHistry(current.getMobile_no(), current.getVisit_date());
                 if (consumerList.size() > 0) {
+                    String comlete_s = "";
                     for (int k = 0; k < consumerList.size(); k++) {
-                        holder.consume_product.setText(consumerList.get(k).getProductName());
-                        holder.consume_product.setId(position);
+                        comlete_s = comlete_s + consumerList.get(k).getProductName() + "\nQuantity : " + consumerList.get(k).getConsumer_qty() + "\n";
 
-                        holder.consume_product_qty_with_date.setText("Quantity : " + consumerList.get(k).getConsumer_qty());
-                        holder.consume_product_qty_with_date.setId(position);
+//                        holder.consume_product_qty_with_date.setText("Quantity : " + consumerList.get(k).getConsumer_qty());
+//                        holder.consume_product_qty_with_date.setId(position);
                     }
+
+                    holder.consume_product.setText(comlete_s);
+                    holder.consume_product.setId(position);
                 }
 
 
@@ -953,9 +957,8 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
                 consume_product_qty_with_date = (TextView) itemView.findViewById(R.id.consume_product_qty_with_date);
                 consume_product = (TextView) itemView.findViewById(R.id.consume_product);
                 btn_ok = (ImageView) itemView.findViewById(R.id.btn_ok);
-                consumer_recycle=(RecyclerView)itemView.findViewById(R.id.consumer_recycle);
+                consumer_recycle = (RecyclerView) itemView.findViewById(R.id.consumer_recycle);
             }
-
         }
     }
 
@@ -1018,6 +1021,104 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
 
         multiPurposeDialog.show();
     }
+
+    public class AdapterforHistry extends RecyclerView.Adapter<AdapterforHistry.MyViewHolder> {
+        private LayoutInflater inflator;
+        List<ProductMaster> data;
+        String show_dialog;
+        MultiPurposeDialog multiPurposeDialog;
+
+        public AdapterforHistry(Context context, List<ProductMaster> data, MultiPurposeDialog multiPurposeDialog, String show_dialog) {
+            inflator = LayoutInflater.from(context);
+            this.data = data;
+            this.show_dialog = show_dialog;
+            this.multiPurposeDialog = multiPurposeDialog;
+        }
+
+        @Override
+        public AdapterforHistry.MyViewHolder onCreateViewHolder(ViewGroup parent, int i) {
+            View view = inflator.inflate(R.layout.adapter_custom, parent, false);
+            return new AdapterforHistry.MyViewHolder(view);
+        }
+
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            final ProductMaster current = data.get(position);
+            if (show_dialog.equals("1")) {
+                holder.sale_card.setVisibility(View.VISIBLE);
+                holder.sale_card.setId(position);
+                holder.consumerhistory_card.setVisibility(View.VISIBLE);
+                holder.consumerhistory_card.setId(position);
+                holder.sale_trcking_name.setText("Date : " + current.getVisit_date());
+                holder.sale_trcking_name.setId(position);
+
+                ArrayList<ProductMaster> consumerList = db.getConsumerSaleHistry(current.getMobile_no(), current.getVisit_date());
+                if (consumerList.size() > 0) {
+                    String comlete_s = "";
+                    for (int k = 0; k < consumerList.size(); k++) {
+                        comlete_s = comlete_s + consumerList.get(k).getProductName() + "\nQuantity : " + consumerList.get(k).getConsumer_qty() + "\n";
+
+//                        holder.consume_product_qty_with_date.setText("Quantity : " + consumerList.get(k).getConsumer_qty());
+//                        holder.consume_product_qty_with_date.setId(position);
+                    }
+
+                    holder.consume_product.setText(comlete_s);
+                    holder.consume_product.setId(position);
+                }
+
+
+            } else {
+                holder.sale_card.setVisibility(View.VISIBLE);
+                holder.sale_card.setId(position);
+                holder.consumerhistory_card.setVisibility(View.GONE);
+                holder.consumerhistory_card.setId(position);
+
+                holder.sale_trcking_name.setText("(MRP - " + current.getMrp().toString() + ")");
+                holder.sale_trcking_name.setId(position);
+
+                holder.sale_card.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        qrcode_text.setText(current.getEanCode());
+                        product_name = current.getProductName();
+                        product_Id = current.getProductId().toString();
+                        product_scan_code = current.getEanCode();
+                        product_mrp = current.getMrp().toString();
+                        multiPurposeDialog.dismiss();
+                    }
+                });
+            }
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            TextView sale_trcking_name, consume_product, consume_product_qty_with_date;
+            CardView sale_card, consumerhistory_card;
+            RecyclerView consumer_recycle;
+            ImageView btn_ok;
+
+            public MyViewHolder(View itemView) {
+                super(itemView);
+                sale_card = (CardView) itemView.findViewById(R.id.sale_card);
+                sale_trcking_name = (TextView) itemView.findViewById(R.id.sale_trcking_name);
+                ////for consumer product
+                consumerhistory_card = (CardView) itemView.findViewById(R.id.consumerhistory_card);
+                consume_product_qty_with_date = (TextView) itemView.findViewById(R.id.consume_product_qty_with_date);
+                consume_product = (TextView) itemView.findViewById(R.id.consume_product);
+                btn_ok = (ImageView) itemView.findViewById(R.id.btn_ok);
+                consumer_recycle = (RecyclerView) itemView.findViewById(R.id.consumer_recycle);
+            }
+        }
+    }
+
+
+
 
 
 }

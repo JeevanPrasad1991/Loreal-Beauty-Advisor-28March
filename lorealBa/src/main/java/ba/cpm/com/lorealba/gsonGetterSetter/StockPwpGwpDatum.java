@@ -9,9 +9,15 @@ public class StockPwpGwpDatum {
     @SerializedName("StoreId")
     @Expose
     private Integer storeId;
+    @SerializedName("StoreName")
+    @Expose
+    private String storeName;
     @SerializedName("ProductId")
     @Expose
     private Integer productId;
+    @SerializedName("ProductName")
+    @Expose
+    private String productName;
     @SerializedName("Stock")
     @Expose
     private Integer stock;
@@ -24,12 +30,28 @@ public class StockPwpGwpDatum {
         this.storeId = storeId;
     }
 
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
     public Integer getProductId() {
         return productId;
     }
 
     public void setProductId(Integer productId) {
         this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public Integer getStock() {
@@ -39,5 +61,4 @@ public class StockPwpGwpDatum {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
-
 }
