@@ -1039,7 +1039,7 @@ public class ProformaInvoiceActivity extends AppCompatActivity implements View.O
         public AdapterforHistry.MyViewHolder onCreateViewHolder(ViewGroup parent, int i) {
             View view = inflator.inflate(R.layout.adapter_custom, parent, false);
             return new AdapterforHistry.MyViewHolder(view);
-            
+
         }
 
 
